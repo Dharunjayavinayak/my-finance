@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,787 +10,1009 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #f0f2f8;
+      --bg: #f6f8fc;
       --surface: #ffffff;
-      --surface2: #f6f8ff;
+      --surface-soft: #f9fbff;
       --text: #111827;
       --muted: #6b7280;
-      --faint: #d1d5db;
-      --border: #e5e7eb;
+      --line: #e5e7eb;
+      --primary: #2563eb;
+      --primary-soft: #eaf2ff;
       --green: #16a34a;
+      --green-soft: #e9f9ef;
       --red: #dc2626;
-      --blue: #2563eb;
-      --blue-light: #eff6ff;
+      --red-soft: #fdecec;
+      --blue-soft: #eaf2ff;
       --purple: #7c3aed;
-      --amber: #d97706;
-      --shadow: 0 2px 16px rgba(15,23,42,0.07);
-      --r: 16px;
-      --r-sm: 10px;
+      --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+      --radius: 18px;
+      --radius-sm: 12px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100dvh; }
-
-    /* TOPBAR */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    button, input, select, textarea { font: inherit; }
+    .app { max-width: 1400px; margin: 0 auto; padding: 24px; }
     .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
       gap: 12px;
-      flex-wrap: wrap;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 1px 8px rgba(0,0,0,0.05);
     }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .logo svg { flex-shrink: 0; }
-    .logo-text { font-size: 18px; font-weight: 800; }
-    .logo-sub { font-size: 12px; color: var(--muted); }
-    .top-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .url-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .url-row input {
-      width: 310px;
-      padding: 9px 13px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-sm);
-      font: inherit;
-      font-size: 13px;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .url-row input:focus { border-color: var(--blue); }
-    .btn {
-      padding: 9px 18px;
-      border: none;
-      border-radius: var(--r-sm);
-      cursor: pointer;
-      font: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    .btn:active { transform: scale(0.97); }
-    .btn-primary { background: var(--blue); color: #fff; }
-    .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
-    .btn-refresh {
-      background: var(--blue-light);
-      color: var(--blue);
-      border: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    #syncStatus {
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    /* MAIN LAYOUT */
-    .page { display: flex; gap: 0; min-height: calc(100dvh - 62px); }
-
-    /* SIDEBAR */
-    .sidebar {
-      width: 320px;
-      flex-shrink: 0;
-      border-right: 1px solid var(--border);
-      background: var(--surface);
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .sidebar h2 { font-size: 15px; font-weight: 700; }
-    .form-grid { display: flex; flex-direction: column; gap: 11px; }
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
-    .field input, .field select, .field textarea {
-      padding: 10px 12px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-sm);
-      font: inherit;
-      font-size: 14px;
-      color: var(--text);
-      background: #fff;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); }
-    .field textarea { resize: vertical; min-height: 64px; }
-    .type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--border); border-radius: var(--r-sm); overflow: hidden; }
-    .type-toggle label {
-      padding: 10px 0;
-      text-align: center;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--muted);
-      background: #fff;
-      transition: background 0.15s, color 0.15s;
-    }
-    .type-toggle input[type=radio] { display: none; }
-    .type-toggle input[type=radio]:checked + label.inflow-lbl { background: #dcfce7; color: var(--green); }
-    .type-toggle input[type=radio]:checked + label.outflow-lbl { background: #fee2e2; color: var(--red); }
-    .submit-btn {
-      background: var(--blue);
-      color: #fff;
-      border: none;
-      border-radius: var(--r-sm);
-      padding: 12px;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.15s;
-    }
-    .submit-btn:hover { opacity: 0.9; }
-    .form-status {
-      font-size: 12px;
-      min-height: 16px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    /* DASHBOARD */
-    .dashboard {
-      flex: 1;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      overflow-x: hidden;
-    }
-
-    /* KPIs */
-    .kpis {
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--primary);
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-    }
-    .kpi {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 18px 20px;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 22px;
       box-shadow: var(--shadow);
     }
-    .kpi-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
-    .kpi-val { font-size: 26px; font-weight: 800; line-height: 1; }
-    .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
-    .kpi-val.green { color: var(--green); }
-    .kpi-val.red { color: var(--red); }
-
-    /* SECTION HEADER */
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .sync-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+      box-shadow: var(--shadow);
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .tab-btn {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      box-shadow: var(--shadow);
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
     .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
     }
-    .section-title { font-size: 15px; font-weight: 700; }
-    .section-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-    /* BANK SWITCHER */
-    .bank-switcher {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .bank-arrow {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .section-title {
+      margin: 0;
       font-size: 16px;
+      font-weight: 800;
+    }
+    .section-sub {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .control, .text-input, .text-area {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      min-height: 46px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+    .control:focus, .text-input:focus, .text-area:focus { border-color: var(--primary); }
+    .btn {
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
       font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-soft {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: transparent;
+    }
+    .btn-outline {
+      background: #fff;
       color: var(--text);
-      transition: background 0.15s;
+      border-color: var(--line);
+    }
+    .btn:hover { opacity: 0.92; }
+    .add-wrap {
+      max-width: 680px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .text-area { min-height: 100px; resize: vertical; }
+    .type-switch {
+      display: inline-flex;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .type-switch button {
+      border: none;
+      background: transparent;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .type-switch button.active.outflow {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+    .type-switch button.active.inflow {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+    .status-text {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 18px;
+    }
+    .dashboard-grid {
+      display: grid;
+      gap: 20px;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: #fff;
+    }
+    .metric-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .metric-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 800;
       flex-shrink: 0;
     }
-    .bank-arrow:hover { background: var(--blue-light); color: var(--blue); }
-    .bank-pill {
-      background: var(--blue-light);
-      color: var(--blue);
-      border-radius: 999px;
-      padding: 7px 18px;
-      font-size: 14px;
-      font-weight: 700;
-      min-width: 110px;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    /* ROW 2: Inflow vs Outflow + Top Spending */
-    .row2 { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
-
-    /* PANEL */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    /* BANK STATS */
-    .bank-stats {
+    .metric-icon.green { background: var(--green-soft); color: var(--green); }
+    .metric-icon.red { background: var(--red-soft); color: var(--red); }
+    .metric-icon.blue { background: var(--blue-soft); color: var(--primary); }
+    .metric-label { font-size: 14px; color: var(--muted); font-weight: 600; }
+    .metric-value { font-size: 34px; font-weight: 800; margin-top: 4px; }
+    .metric-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+    .chart-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+    }
+    .top-spending {
+      margin-top: 20px;
+    }
+    .spend-list {
+      display: flex;
+      flex-direction: column;
       gap: 12px;
-      margin-top: 14px;
     }
-    .bstat {
-      background: var(--surface2);
-      border-radius: var(--r-sm);
-      padding: 12px 14px;
-      text-align: center;
-    }
-    .bstat-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
-    .bstat-val { font-size: 17px; font-weight: 800; margin-top: 4px; }
-
-    /* TOP SPENDING LIST */
-    .spend-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
-    .spend-row {
+    .spend-item {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 11px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--r-sm);
-      background: var(--surface2);
+      gap: 14px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: var(--surface-soft);
     }
-    .spend-cat { font-size: 14px; font-weight: 600; }
-    .spend-reason { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .spend-amt { font-size: 15px; font-weight: 700; color: var(--red); flex-shrink: 0; }
-
-    /* ROW 3: Categories + Transactions */
-    .row3 { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
-
-    /* FILTERS */
-    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
-    .filters select {
-      padding: 8px 12px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-sm);
-      font: inherit;
+    .spend-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .spend-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .spend-name {
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .spend-meta {
+      color: var(--muted);
       font-size: 13px;
-      font-weight: 600;
-      background: #fff;
-      cursor: pointer;
-      outline: none;
+      margin-top: 3px;
     }
-    .filters select:focus { border-color: var(--blue); }
-
-    /* TRANSACTIONS TABLE */
-    .table-wrap { overflow-x: auto; border-radius: var(--r-sm); border: 1px solid var(--border); margin-top: 0; }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; }
-    th, td { padding: 11px 13px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
-    th { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; background: #fafafa; }
+    .spend-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .spend-amt {
+      font-weight: 800;
+      color: var(--text);
+    }
+    .spend-date {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+    th {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: #fafbff;
+    }
     tr:last-child td { border-bottom: none; }
-    .tag {
-      display: inline-block;
-      padding: 3px 9px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
     }
-    .tag-in { background: #dcfce7; color: var(--green); }
-    .tag-out { background: #fee2e2; color: var(--red); }
-    .tag-bank { background: var(--blue-light); color: var(--blue); }
-    .empty-row td { color: var(--muted); font-style: italic; text-align: center; padding: 28px; }
-
-    @media (max-width: 1200px) {
-      .row2 { grid-template-columns: 1fr; }
-      .row3 { grid-template-columns: 1fr; }
-      .kpis { grid-template-columns: repeat(2, 1fr); }
+    .badge-bank { background: var(--primary-soft); color: var(--primary); }
+    .badge-in { background: var(--green-soft); color: var(--green); }
+    .badge-out { background: var(--red-soft); color: var(--red); }
+    .settings-wrap {
+      max-width: 760px;
+      display: grid;
+      gap: 20px;
     }
-    @media (max-width: 860px) {
-      .page { flex-direction: column; }
-      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
-      .url-row input { width: 200px; }
+    .settings-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    @media (max-width: 540px) {
-      .kpis { grid-template-columns: 1fr; }
-      .topbar { flex-direction: column; align-items: flex-start; }
-      .bank-stats { grid-template-columns: 1fr; }
+    .settings-row .text-input { flex: 1 1 380px; }
+    .settings-help {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .muted-center {
+      color: var(--muted);
+      text-align: center;
+      padding: 24px 8px;
+      font-size: 14px;
+    }
+    @media (max-width: 1100px) {
+      .chart-grid { grid-template-columns: 1fr; }
+      .metric-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .app { padding: 16px; }
+      .form-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
-<!-- TOPBAR -->
-<header class="topbar">
-  <div class="logo">
-    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-label="Dharun Finances Logo">
-      <rect width="34" height="34" rx="10" fill="#2563eb"/>
-      <path d="M10 24 L10 10 L17 10 C21.4 10 24 12.8 24 17 C24 21.2 21.4 24 17 24 Z" fill="white"/>
-      <circle cx="27" cy="10" r="3" fill="#93c5fd"/>
-    </svg>
-    <div>
-      <div class="logo-text">Dharun Finances</div>
-      <div class="logo-sub">Personal tracker · Google Sheets sync</div>
-    </div>
-  </div>
-  <div class="top-right">
-    <div class="url-row">
-      <input id="scriptUrl" type="url" placeholder="Paste Apps Script Web App URL here…" />
-      <button class="btn btn-outline" id="saveUrlBtn">Save</button>
-    </div>
-    <button class="btn btn-refresh" id="refreshBtn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-      Refresh
-    </button>
-    <span id="syncStatus">Not synced</span>
-  </div>
-</header>
-
-<div class="page">
-  <!-- SIDEBAR FORM -->
-  <aside class="sidebar">
-    <h2>Add transaction</h2>
-    <div class="form-grid">
-      <div class="field">
-        <label>Date</label>
-        <input id="f-date" type="date" />
-      </div>
-      <div class="field">
-        <label>Bank</label>
-        <select id="f-bank"><option value="Hdfc">HDFC</option><option value="Iob">IOB</option><option value="Canara">Canara</option></select>
-      </div>
-      <div class="field">
-        <label>Type</label>
-        <div class="type-toggle">
-          <input type="radio" name="txtype" id="t-out" value="outflow" checked />
-          <label for="t-out" class="outflow-lbl">Outflow</label>
-          <input type="radio" name="txtype" id="t-in" value="inflow" />
-          <label for="t-in" class="inflow-lbl">Inflow</label>
-        </div>
-      </div>
-      <div class="field">
-        <label>Category</label>
-        <input id="f-cat" type="text" placeholder="Food, Salary, Petrol…" autocomplete="off" />
-      </div>
-      <div class="field">
-        <label>Amount (₹)</label>
-        <input id="f-amt" type="number" min="0.01" step="0.01" placeholder="0.00" />
-      </div>
-      <div class="field">
-        <label>Description</label>
-        <textarea id="f-desc" placeholder="Reason / notes…"></textarea>
-      </div>
-      <button class="submit-btn" id="addBtn">+ Add transaction</button>
-      <div class="form-status" id="formStatus"></div>
-    </div>
-  </aside>
-
-  <!-- DASHBOARD -->
-  <main class="dashboard">
-
-    <!-- KPIs -->
-    <section class="kpis">
-      <div class="kpi">
-        <div class="kpi-label">Total inflow</div>
-        <div class="kpi-val green" id="kpi-inflow">₹0</div>
-        <div class="kpi-sub" id="kpi-inflow-sub">All banks · selected period</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Total outflow</div>
-        <div class="kpi-val red" id="kpi-outflow">₹0</div>
-        <div class="kpi-sub" id="kpi-outflow-sub">All banks · selected period</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Net savings</div>
-        <div class="kpi-val" id="kpi-net">₹0</div>
-        <div class="kpi-sub" id="kpi-net-sub">Inflow − Outflow</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Transactions</div>
-        <div class="kpi-val" id="kpi-count">0</div>
-        <div class="kpi-sub" id="kpi-count-sub">Selected period</div>
-      </div>
-    </section>
-
-    <!-- INFLOW VS OUTFLOW CHART (bank-wise) -->
-    <section class="panel">
-      <div class="section-head">
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">D</div>
         <div>
-          <div class="section-title">Inflow vs Outflow</div>
-          <div class="section-sub" id="bankChartSub">Monthly view across banks</div>
-        </div>
-        <div class="bank-switcher">
-          <button class="bank-arrow" id="prevBank" title="Previous bank">&#8592;</button>
-          <div class="bank-pill" id="activeBankPill">All Banks</div>
-          <button class="bank-arrow" id="nextBank" title="Next bank">&#8594;</button>
+          <h1>Dharun Finances</h1>
+          <p>Personal tracker · GitHub Pages · Google Sheets sync</p>
         </div>
       </div>
-      <canvas id="bankChart" height="90"></canvas>
-      <div class="bank-stats">
-        <div class="bstat">
-          <div class="bstat-label">Inflow</div>
-          <div class="bstat-val green" id="bs-inflow">₹0</div>
-        </div>
-        <div class="bstat">
-          <div class="bstat-label">Outflow</div>
-          <div class="bstat-val red" id="bs-outflow">₹0</div>
-        </div>
-        <div class="bstat">
-          <div class="bstat-label">Net</div>
-          <div class="bstat-val" id="bs-net">₹0</div>
-        </div>
-      </div>
-    </section>
+      <div class="sync-chip" id="globalSyncStatus">Waiting for sync…</div>
+    </div>
 
-    <!-- CATEGORIES + TOP SPENDING -->
-    <div class="row2">
-      <section class="panel">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="add">Add</button>
+      <button class="tab-btn" data-tab="dashboard">Dashboard</button>
+      <button class="tab-btn" data-tab="history">History</button>
+      <button class="tab-btn" data-tab="settings">Settings</button>
+    </div>
+
+    <section class="tab-panel active" id="tab-add">
+      <div class="card add-wrap">
         <div class="section-head">
           <div>
-            <div class="section-title">Categories</div>
-            <div class="section-sub">Outflow breakdown · filtered by month &amp; year</div>
-          </div>
-          <div class="filters">
-            <select id="fMonth"></select>
-            <select id="fYear"></select>
+            <h2 class="section-title">Add transaction</h2>
+            <p class="section-sub">Add an inflow or outflow and sync it to Google Sheets.</p>
           </div>
         </div>
-        <canvas id="catChart" height="140"></canvas>
-      </section>
-
-      <section class="panel">
-        <div class="section-head">
-          <div>
-            <div class="section-title">Top spending</div>
-            <div class="section-sub" id="topSpendSub">Selected bank · selected month</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Date</label>
+            <input class="text-input" id="addDate" type="date" />
+          </div>
+          <div class="field">
+            <label>Bank</label>
+            <select class="control" id="addBank"></select>
+          </div>
+          <div class="field full">
+            <label>Type</label>
+            <div class="type-switch">
+              <button type="button" class="active outflow" id="typeOutBtn">Outflow</button>
+              <button type="button" class="inflow" id="typeInBtn">Inflow</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <input class="text-input" id="addCategory" type="text" placeholder="Food, Salary, Petrol..." />
+          </div>
+          <div class="field">
+            <label>Amount</label>
+            <input class="text-input" id="addAmount" type="number" min="0" step="0.01" placeholder="0" />
+          </div>
+          <div class="field full">
+            <label>Description</label>
+            <textarea class="text-area" id="addDescription" placeholder="Reason / notes"></textarea>
+          </div>
+          <div class="field full">
+            <button class="btn btn-primary" id="addSubmitBtn">Add transaction</button>
           </div>
         </div>
-        <div class="spend-list" id="topSpendList">
-          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">No data yet.</div>
-        </div>
-      </section>
-    </div>
-
-    <!-- TRANSACTIONS TABLE -->
-    <section class="panel">
-      <div class="section-head">
-        <div>
-          <div class="section-title">Recent transactions</div>
-          <div class="section-sub">Latest 30 from Google Sheets</div>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Bank</th>
-              <th>Type</th>
-              <th>Category</th>
-              <th>Description</th>
-              <th>Credit</th>
-              <th>Cost</th>
-            </tr>
-          </thead>
-          <tbody id="txBody">
-            <tr class="empty-row"><td colspan="7">No transactions loaded. Paste the script URL and click Refresh.</td></tr>
-          </tbody>
-        </table>
+        <div class="status-text" id="addStatus"></div>
       </div>
     </section>
 
-  </main>
-</div>
+    <section class="tab-panel" id="tab-dashboard">
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Dashboard</h2>
+              <p class="section-sub">Bank-wise report for the selected month and year.</p>
+            </div>
+            <div class="filters">
+              <select class="control" id="dashBank"></select>
+              <select class="control" id="dashMonth"></select>
+              <select class="control" id="dashYear"></select>
+              <button class="btn btn-soft" id="dashboardSyncBtn">Sync</button>
+            </div>
+          </div>
 
-<script>
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const COLORS = ['#2563eb','#16a34a','#d97706','#7c3aed','#db2777','#0891b2','#ea580c','#4f46e5','#65a30d','#0f766e'];
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-top">
+                <div class="metric-icon green">↓</div>
+                <div>
+                  <div class="metric-label">Inflow</div>
+                  <div class="metric-value" id="metricInflow" style="color: var(--green);">₹0</div>
+                </div>
+              </div>
+              <div class="metric-note" id="metricInflowNote">Selected bank · selected period</div>
+            </div>
+            <div class="metric">
+              <div class="metric-top">
+                <div class="metric-icon red">↑</div>
+                <div>
+                  <div class="metric-label">Outflow</div>
+                  <div class="metric-value" id="metricOutflow" style="color: var(--red);">₹0</div>
+                </div>
+              </div>
+              <div class="metric-note" id="metricOutflowNote">Selected bank · selected period</div>
+            </div>
+            <div class="metric">
+              <div class="metric-top">
+                <div class="metric-icon blue">⊖</div>
+                <div>
+                  <div class="metric-label">Balance</div>
+                  <div class="metric-value" id="metricBalance" style="color: var(--primary);">₹0</div>
+                </div>
+              </div>
+              <div class="metric-note" id="metricBalanceNote">Latest balance in selected bank</div>
+            </div>
+          </div>
+        </div>
 
-const $ = id => document.getElementById(id);
-const money = v => '₹' + Number(v||0).toLocaleString('en-IN', {maximumFractionDigits:2});
+        <div class="chart-grid">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2 class="section-title">Inflow vs Outflow</h2>
+                <p class="section-sub" id="bankChartSub">Monthly trend for the selected bank and year.</p>
+              </div>
+            </div>
+            <canvas id="bankChart" height="170"></canvas>
+          </div>
 
-let state = {
-  scriptUrl: '',
-  transactions: [],
-  banks: ['All Banks'],
-  bankIndex: 0,
-  month: new Date().getMonth() + 1,
-  year: new Date().getFullYear(),
-  chartBank: null,
-  chartCat: null,
-};
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2 class="section-title">Categories</h2>
+                <p class="section-sub" id="categorySub">Bank-wise outflow breakdown.</p>
+              </div>
+            </div>
+            <canvas id="categoryChart" height="170"></canvas>
+            <div class="muted-center" id="categoryTotalText">Total outflow ₹0</div>
+          </div>
+        </div>
 
-/* ---- helpers ---- */
-function getActiveBank() { return state.banks[state.bankIndex] || 'All Banks'; }
+        <div class="card top-spending">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Top spending</h2>
+              <p class="section-sub" id="topSpendingSub">Bank-wise top expenses for the selected month.</p>
+            </div>
+          </div>
+          <div class="spend-list" id="topSpendingList"></div>
+        </div>
+      </div>
+    </section>
 
-function filterTx(bank, month, year) {
-  return state.transactions.filter(t => {
-    const bankOk = bank === 'All Banks' || t.bank === bank;
-    const monthOk = month ? t.month === month : true;
-    const yearOk  = year  ? t.year  === year  : true;
-    return bankOk && monthOk && yearOk;
-  });
-}
+    <section class="tab-panel" id="tab-history">
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">History</h2>
+            <p class="section-sub">Recent transactions from Google Sheets.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Bank</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Credit</th>
+                <th>Cost</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-function totals(txs) {
-  return txs.reduce((a,t) => {
-    a.inflow  += Number(t.credit||0);
-    a.outflow += Number(t.cost  ||0);
-    a.count   += 1;
-    return a;
-  }, {inflow:0, outflow:0, count:0});
-}
+    <section class="tab-panel" id="tab-settings">
+      <div class="settings-wrap">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Settings</h2>
+              <p class="section-sub">Save your Apps Script Web App URL once. It will auto-load next time.</p>
+            </div>
+          </div>
+          <div class="settings-row">
+            <input class="text-input" id="scriptUrlInput" type="url" placeholder="Paste Apps Script Web App URL here..." />
+            <button class="btn btn-primary" id="saveScriptUrlBtn">Save URL</button>
+            <button class="btn btn-soft" id="settingsSyncBtn">Sync now</button>
+            <button class="btn btn-outline" id="clearScriptUrlBtn">Clear URL</button>
+          </div>
+          <div class="status-text" id="settingsStatus"></div>
+        </div>
+        <div class="card settings-help">
+          <strong>How this works:</strong><br>
+          1. Save the Apps Script URL once.<br>
+          2. The site stores it in your browser using localStorage.<br>
+          3. On every future page load, the dashboard auto-syncs immediately.<br>
+          4. You can still manually sync from Settings or Dashboard anytime.
+        </div>
+      </div>
+    </section>
+  </div>
 
-/* ---- KPIs ---- */
-function updateKPIs() {
-  const txs = filterTx('All Banks', state.month, state.year);
-  const t = totals(txs);
-  const label = `${MONTHS[state.month-1]} ${state.year}`;
-  $('kpi-inflow').textContent  = money(t.inflow);
-  $('kpi-outflow').textContent = money(t.outflow);
-  $('kpi-net').textContent     = money(t.inflow - t.outflow);
-  $('kpi-count').textContent   = t.count;
-  $('kpi-net').style.color     = t.inflow >= t.outflow ? 'var(--green)' : 'var(--red)';
-  $('kpi-inflow-sub').textContent  = `All banks · ${label}`;
-  $('kpi-outflow-sub').textContent = `All banks · ${label}`;
-  $('kpi-net-sub').textContent     = `All banks · ${label}`;
-  $('kpi-count-sub').textContent   = label;
-}
+  <script>
+    const STORAGE_KEY = 'dharun_finances_script_url';
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const CHART_COLORS = ['#60a5fa','#86efac','#fcd34d','#c4b5fd','#fdba74','#fca5a5','#93c5fd','#a7f3d0'];
 
-/* ---- Bank chart ---- */
-function renderBankChart() {
-  const bank = getActiveBank();
-  const txs = filterTx(bank, state.month, state.year);
-  const t = totals(txs);
-  $('activeBankPill').textContent = bank;
-  $('bankChartSub').textContent   = `${MONTHS[state.month-1]} ${state.year}`;
-  $('bs-inflow').textContent  = money(t.inflow);
-  $('bs-outflow').textContent = money(t.outflow);
-  $('bs-net').textContent     = money(t.inflow - t.outflow);
-  $('bs-net').style.color     = t.inflow >= t.outflow ? 'var(--green)' : 'var(--red)';
+    const state = {
+      scriptUrl: '',
+      transactions: [],
+      banks: [],
+      addType: 'outflow',
+      selectedBank: 'Hdfc',
+      selectedMonth: new Date().getMonth() + 1,
+      selectedYear: new Date().getFullYear(),
+      bankChart: null,
+      categoryChart: null
+    };
 
-  /* 12-month bars for selected bank */
-  const yr = state.year;
-  const monthLabels = MONTHS.map(m => m.slice(0,3));
-  const inflowData  = Array(12).fill(0);
-  const outflowData = Array(12).fill(0);
-  filterTx(bank, null, yr).forEach(t => {
-    inflowData [t.month-1] += Number(t.credit||0);
-    outflowData[t.month-1] += Number(t.cost  ||0);
-  });
+    const $ = id => document.getElementById(id);
+    const money = n => `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
-  const ctx = $('bankChart');
-  if (state.chartBank) state.chartBank.destroy();
-  state.chartBank = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: monthLabels,
-      datasets: [
-        { label:'Inflow',  data: inflowData,  backgroundColor:'#86efac', borderRadius:6 },
-        { label:'Outflow', data: outflowData, backgroundColor:'#fca5a5', borderRadius:6 }
-      ]
-    },
-    options: {
-      responsive:true,
-      plugins:{ legend:{ position:'top' } },
-      scales:{ y:{ beginAtZero:true, ticks:{ callback: v => '₹'+Number(v).toLocaleString('en-IN') } } }
+    function setGlobalStatus(text, isError = false) {
+      const el = $('globalSyncStatus');
+      el.textContent = text;
+      el.style.color = isError ? 'var(--red)' : 'var(--muted)';
     }
-  });
-}
 
-/* ---- Category chart ---- */
-function renderCatChart() {
-  const txs = filterTx('All Banks', state.month, state.year).filter(t => Number(t.cost||0) > 0);
-  const map = {};
-  txs.forEach(t => { map[t.category] = (map[t.category]||0) + Number(t.cost||0); });
-  const sorted = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    function setStatus(id, text, isError = false) {
+      const el = $(id);
+      el.textContent = text || '';
+      el.style.color = isError ? 'var(--red)' : 'var(--muted)';
+    }
 
-  const ctx = $('catChart');
-  if (state.chartCat) state.chartCat.destroy();
-  state.chartCat = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: sorted.map(x=>x[0]),
-      datasets:[{ data: sorted.map(x=>x[1]), backgroundColor: COLORS, borderWidth:2 }]
-    },
-    options: {
-      responsive:true,
-      plugins:{
-        legend:{ position:'right', labels:{ font:{ size:12 }, boxWidth:14 } },
-        tooltip:{ callbacks:{ label: ctx => ` ₹${Number(ctx.parsed).toLocaleString('en-IN')}` } }
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === name);
+      });
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === `tab-${name}`);
+      });
+    }
+
+    function setupTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+    }
+
+    function setupTypeSwitch() {
+      $('typeOutBtn').addEventListener('click', () => setAddType('outflow'));
+      $('typeInBtn').addEventListener('click', () => setAddType('inflow'));
+    }
+
+    function setAddType(type) {
+      state.addType = type;
+      $('typeOutBtn').classList.toggle('active', type === 'outflow');
+      $('typeInBtn').classList.toggle('active', type === 'inflow');
+    }
+
+    function loadSavedUrl() {
+      const saved = localStorage.getItem(STORAGE_KEY) || '';
+      state.scriptUrl = saved.trim();
+      $('scriptUrlInput').value = state.scriptUrl;
+    }
+
+    function saveUrl() {
+      const url = $('scriptUrlInput').value.trim();
+      if (!url) {
+        setStatus('settingsStatus', 'Paste a valid Apps Script URL.', true);
+        return false;
       }
+      state.scriptUrl = url;
+      localStorage.setItem(STORAGE_KEY, url);
+      setStatus('settingsStatus', 'Script URL saved successfully.');
+      setGlobalStatus('Script URL saved. Ready to sync.');
+      return true;
     }
-  });
-}
 
-/* ---- Top spending ---- */
-function renderTopSpend() {
-  const bank = getActiveBank();
-  const txs = filterTx(bank, state.month, state.year).filter(t => Number(t.cost||0) > 0);
-  const sorted = [...txs].sort((a,b) => Number(b.cost)-Number(a.cost)).slice(0,5);
-  $('topSpendSub').textContent = `${bank} · ${MONTHS[state.month-1]} ${state.year}`;
-  $('topSpendList').innerHTML = sorted.length
-    ? sorted.map(t=>`
-        <div class="spend-row">
-          <div>
-            <div class="spend-cat">${t.category}</div>
-            <div class="spend-reason">${t.reason||'—'}</div>
+    function clearUrl() {
+      localStorage.removeItem(STORAGE_KEY);
+      state.scriptUrl = '';
+      $('scriptUrlInput').value = '';
+      setStatus('settingsStatus', 'Saved script URL cleared.');
+      setGlobalStatus('No script URL saved.', true);
+    }
+
+    function getYears() {
+      const years = [...new Set(state.transactions.map(t => t.year))].sort((a, b) => a - b);
+      if (!years.length) return [new Date().getFullYear()];
+      return years;
+    }
+
+    function ensureSelections() {
+      if (!state.banks.length) state.banks = ['Hdfc', 'Iob', 'Canara'];
+      if (!state.banks.includes(state.selectedBank)) state.selectedBank = state.banks[0];
+      const years = getYears();
+      if (!years.includes(state.selectedYear)) state.selectedYear = years[years.length - 1];
+    }
+
+    function populateControls() {
+      ensureSelections();
+      $('addDate').value = $('addDate').value || new Date().toISOString().slice(0, 10);
+
+      $('addBank').innerHTML = state.banks.map(bank => `<option value="${bank}">${bank}</option>`).join('');
+      $('dashBank').innerHTML = state.banks.map(bank => `<option value="${bank}">${bank}</option>`).join('');
+      $('dashMonth').innerHTML = MONTHS.map((m, i) => `<option value="${i + 1}">${m}</option>`).join('');
+      $('dashYear').innerHTML = getYears().map(y => `<option value="${y}">${y}</option>`).join('');
+
+      $('dashBank').value = state.selectedBank;
+      $('dashMonth').value = String(state.selectedMonth);
+      $('dashYear').value = String(state.selectedYear);
+      if (!$('addBank').value) $('addBank').value = state.banks[0];
+    }
+
+    function txForBankMonth(bank, month, year) {
+      return state.transactions.filter(t => t.bank === bank && t.month === month && t.year === year);
+    }
+
+    function txForBankYear(bank, year) {
+      return state.transactions.filter(t => t.bank === bank && t.year === year);
+    }
+
+    function calcTotals(transactions) {
+      return transactions.reduce((acc, t) => {
+        acc.inflow += Number(t.credit || 0);
+        acc.outflow += Number(t.cost || 0);
+        acc.count += 1;
+        return acc;
+      }, { inflow: 0, outflow: 0, count: 0 });
+    }
+
+    function latestBalanceForBank(bank, month, year) {
+      const txs = txForBankMonth(bank, month, year);
+      if (!txs.length) {
+        const allBankTx = state.transactions.filter(t => t.bank === bank).sort((a, b) => b.date.localeCompare(a.date));
+        return allBankTx.length ? Number(allBankTx[0].balance || 0) : 0;
+      }
+      const latest = [...txs].sort((a, b) => b.date.localeCompare(a.date))[0];
+      return Number(latest.balance || 0);
+    }
+
+    function renderDashboardMetrics() {
+      const txs = txForBankMonth(state.selectedBank, state.selectedMonth, state.selectedYear);
+      const totals = calcTotals(txs);
+      const balance = latestBalanceForBank(state.selectedBank, state.selectedMonth, state.selectedYear);
+      const label = `${state.selectedBank} · ${MONTHS[state.selectedMonth - 1]} ${state.selectedYear}`;
+
+      $('metricInflow').textContent = money(totals.inflow);
+      $('metricOutflow').textContent = money(totals.outflow);
+      $('metricBalance').textContent = money(balance);
+      $('metricInflowNote').textContent = label;
+      $('metricOutflowNote').textContent = label;
+      $('metricBalanceNote').textContent = `Latest balance for ${state.selectedBank}`;
+    }
+
+    function renderBankChart() {
+      const yearlyTx = txForBankYear(state.selectedBank, state.selectedYear);
+      const inflow = Array(12).fill(0);
+      const outflow = Array(12).fill(0);
+      yearlyTx.forEach(t => {
+        inflow[t.month - 1] += Number(t.credit || 0);
+        outflow[t.month - 1] += Number(t.cost || 0);
+      });
+
+      $('bankChartSub').textContent = `${state.selectedBank} · ${state.selectedYear}`;
+      const ctx = $('bankChart');
+      if (state.bankChart) state.bankChart.destroy();
+      state.bankChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: MONTHS.map(m => m.slice(0, 3)),
+          datasets: [
+            {
+              label: 'Inflow',
+              data: inflow,
+              borderColor: '#22c55e',
+              backgroundColor: 'rgba(34,197,94,0.12)',
+              fill: true,
+              tension: 0.38,
+              pointRadius: 3
+            },
+            {
+              label: 'Outflow',
+              data: outflow,
+              borderColor: '#ef4444',
+              backgroundColor: 'rgba(239,68,68,0.10)',
+              fill: true,
+              tension: 0.38,
+              pointRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'top', align: 'start' } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: value => '₹' + Number(value).toLocaleString('en-IN') }
+            }
+          }
+        }
+      });
+    }
+
+    function renderCategoryChart() {
+      const txs = txForBankMonth(state.selectedBank, state.selectedMonth, state.selectedYear).filter(t => Number(t.cost || 0) > 0);
+      const totals = {};
+      txs.forEach(t => {
+        const key = t.category || 'Others';
+        totals[key] = (totals[key] || 0) + Number(t.cost || 0);
+      });
+      const sorted = Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, 8);
+      const labels = sorted.map(x => x[0]);
+      const values = sorted.map(x => x[1]);
+      const total = values.reduce((a, b) => a + b, 0);
+
+      $('categorySub').textContent = `${state.selectedBank} · ${MONTHS[state.selectedMonth - 1]} ${state.selectedYear}`;
+      $('categoryTotalText').textContent = `Total outflow ${money(total)}`;
+
+      const ctx = $('categoryChart');
+      if (state.categoryChart) state.categoryChart.destroy();
+      state.categoryChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{ data: values, backgroundColor: CHART_COLORS, borderWidth: 0 }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'right' }
+          }
+        }
+      });
+    }
+
+    function iconForCategory(category) {
+      const c = String(category || '').toLowerCase();
+      if (c.includes('food')) return '🍽';
+      if (c.includes('petrol') || c.includes('transport')) return '⛽';
+      if (c.includes('subscription')) return '📶';
+      if (c.includes('medicine')) return '💊';
+      if (c.includes('purchase') || c.includes('shopping')) return '🛍';
+      if (c.includes('salary') || c.includes('inflow')) return '💸';
+      return '•';
+    }
+
+    function renderTopSpending() {
+      const txs = txForBankMonth(state.selectedBank, state.selectedMonth, state.selectedYear)
+        .filter(t => Number(t.cost || 0) > 0)
+        .sort((a, b) => Number(b.cost) - Number(a.cost))
+        .slice(0, 5);
+
+      $('topSpendingSub').textContent = `${state.selectedBank} · ${MONTHS[state.selectedMonth - 1]} ${state.selectedYear}`;
+      const list = $('topSpendingList');
+      if (!txs.length) {
+        list.innerHTML = `<div class="muted-center">No outflow for this selection.</div>`;
+        return;
+      }
+      list.innerHTML = txs.map(t => `
+        <div class="spend-item">
+          <div class="spend-left">
+            <div class="spend-icon">${iconForCategory(t.category)}</div>
+            <div>
+              <div class="spend-name">${t.reason || t.category}</div>
+              <div class="spend-meta">${t.category}</div>
+            </div>
           </div>
-          <div class="spend-amt">${money(t.cost)}</div>
+          <div class="spend-right">
+            <div class="spend-amt">${money(t.cost)}</div>
+            <div class="spend-date">${t.date}</div>
+          </div>
         </div>
-      `).join('')
-    : `<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">No outflow for this selection.</div>`;
-}
+      `).join('');
+    }
 
-/* ---- Transactions table ---- */
-function renderTable() {
-  const rows = [...state.transactions]
-    .sort((a,b) => b.date.localeCompare(a.date))
-    .slice(0,30);
-  $('txBody').innerHTML = rows.length
-    ? rows.map(t=>`
+    function renderHistory() {
+      const body = $('historyTableBody');
+      const rows = [...state.transactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 50);
+      if (!rows.length) {
+        body.innerHTML = `<tr><td colspan="8" class="muted-center">No transactions available.</td></tr>`;
+        return;
+      }
+      body.innerHTML = rows.map(t => `
         <tr>
           <td>${t.date}</td>
-          <td><span class="tag tag-bank">${t.bank}</span></td>
-          <td><span class="tag ${t.credit>0?'tag-in':'tag-out'}">${t.credit>0?'Inflow':'Outflow'}</span></td>
+          <td><span class="badge badge-bank">${t.bank}</span></td>
+          <td><span class="badge ${Number(t.credit || 0) > 0 ? 'badge-in' : 'badge-out'}">${Number(t.credit || 0) > 0 ? 'Inflow' : 'Outflow'}</span></td>
           <td>${t.category}</td>
-          <td>${t.reason||'—'}</td>
-          <td style="color:var(--green);font-weight:600;">${t.credit?money(t.credit):'—'}</td>
-          <td style="color:var(--red);font-weight:600;">${t.cost?money(t.cost):'—'}</td>
+          <td>${t.reason || '-'}</td>
+          <td style="color: var(--green); font-weight: 700;">${Number(t.credit || 0) ? money(t.credit) : '—'}</td>
+          <td style="color: var(--red); font-weight: 700;">${Number(t.cost || 0) ? money(t.cost) : '—'}</td>
+          <td>${money(t.balance || 0)}</td>
         </tr>
-      `).join('')
-    : `<tr class="empty-row"><td colspan="7">No transactions loaded. Paste the script URL and click Refresh.</td></tr>`;
-}
+      `).join('');
+    }
 
-/* ---- Filters ---- */
-function populateFilters() {
-  const years = [...new Set(state.transactions.map(t=>t.year))].sort();
-  const yrList = years.length ? years : [state.year];
-  if (!yrList.includes(state.year)) state.year = yrList[yrList.length-1];
+    function renderAll() {
+      populateControls();
+      renderDashboardMetrics();
+      renderBankChart();
+      renderCategoryChart();
+      renderTopSpending();
+      renderHistory();
+    }
 
-  $('fMonth').innerHTML = MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
-  $('fYear').innerHTML  = yrList.map(y=>`<option value="${y}">${y}</option>`).join('');
-  $('fMonth').value = String(state.month);
-  $('fYear').value  = String(state.year);
-}
+    async function syncFromSheet(source = 'manual') {
+      if (!state.scriptUrl) {
+        setGlobalStatus('No Apps Script URL saved.', true);
+        setStatus('settingsStatus', 'Save the Apps Script URL first.', true);
+        return;
+      }
+      setGlobalStatus(source === 'auto' ? 'Auto syncing...' : 'Syncing...');
+      try {
+        const separator = state.scriptUrl.includes('?') ? '&' : '?';
+        const response = await fetch(`${state.scriptUrl}${separator}action=read&_=${Date.now()}`);
+        const data = await response.json();
+        if (data.status !== 'ok') throw new Error(data.message || 'Sync failed');
+        state.transactions = Array.isArray(data.transactions) ? data.transactions : [];
+        state.banks = Array.isArray(data.banks) && data.banks.length ? data.banks : ['Hdfc', 'Iob', 'Canara'];
+        ensureSelections();
+        renderAll();
+        const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        setGlobalStatus(`Synced ${state.transactions.length} rows · ${time}`);
+        setStatus('settingsStatus', 'Data synced successfully.');
+      } catch (err) {
+        setGlobalStatus(err.message || 'Sync failed.', true);
+        setStatus('settingsStatus', err.message || 'Sync failed.', true);
+      }
+    }
 
-function populateBankDropdown() {
-  const banks = state.banks.filter(b=>b!=='All Banks');
-  $('f-bank').innerHTML = banks.length
-    ? banks.map(b=>`<option value="${b}">${b}</option>`).join('')
-    : `<option value="Hdfc">HDFC</option><option value="Iob">IOB</option><option value="Canara">Canara</option>`;
-}
+    async function addTransaction() {
+      if (!state.scriptUrl) {
+        setStatus('addStatus', 'Save the Apps Script URL in Settings first.', true);
+        switchTab('settings');
+        return;
+      }
+      const date = $('addDate').value;
+      const bank = $('addBank').value;
+      const category = $('addCategory').value.trim();
+      const amount = $('addAmount').value;
+      const description = $('addDescription').value.trim();
+      if (!date) return setStatus('addStatus', 'Please select a date.', true);
+      if (!category) return setStatus('addStatus', 'Please enter a category.', true);
+      if (!amount || Number(amount) <= 0) return setStatus('addStatus', 'Please enter a valid amount.', true);
 
-/* ---- Render all ---- */
-function renderAll() {
-  populateFilters();
-  populateBankDropdown();
-  updateKPIs();
-  renderBankChart();
-  renderCatChart();
-  renderTopSpend();
-  renderTable();
-}
+      setStatus('addStatus', 'Saving transaction...');
+      try {
+        const body = new URLSearchParams({
+          action: 'write',
+          date,
+          bank,
+          type: state.addType,
+          category,
+          amount,
+          description
+        });
+        const response = await fetch(state.scriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+          body: body.toString()
+        });
+        const data = await response.json();
+        if (data.status !== 'ok') throw new Error(data.message || 'Save failed');
+        state.transactions = Array.isArray(data.transactions) ? data.transactions : [];
+        state.banks = Array.isArray(data.banks) && data.banks.length ? data.banks : state.banks;
+        state.selectedBank = bank;
+        const [y, m] = date.split('-');
+        state.selectedYear = Number(y);
+        state.selectedMonth = Number(m);
+        $('addAmount').value = '';
+        $('addDescription').value = '';
+        $('addCategory').value = '';
+        renderAll();
+        setStatus('addStatus', 'Transaction added and dashboard synced.');
+        setGlobalStatus('Transaction saved and synced.');
+      } catch (err) {
+        setStatus('addStatus', err.message || 'Save failed.', true);
+      }
+    }
 
-/* ---- Sync from sheet ---- */
-async function syncFromSheet() {
-  if (!state.scriptUrl) { setSyncStatus('Paste the script URL first.', true); return; }
-  setSyncStatus('Syncing…');
-  const url = `${state.scriptUrl}${state.scriptUrl.includes('?')?'&':'?'}action=read&t=${Date.now()}`;
-  const res  = await fetch(url);
-  const data = await res.json();
-  if (data.status !== 'ok') throw new Error(data.message||'Read failed');
-  state.transactions = data.transactions || [];
-  const serverBanks  = data.banks || [...new Set(state.transactions.map(t=>t.bank))].sort();
-  state.banks = ['All Banks', ...serverBanks];
-  if (state.bankIndex >= state.banks.length) state.bankIndex = 0;
-  renderAll();
-  setSyncStatus(`Synced ${state.transactions.length} transactions · ${new Date().toLocaleTimeString('en-IN')}`);
-}
+    function bindEvents() {
+      setupTabs();
+      setupTypeSwitch();
+      $('saveScriptUrlBtn').addEventListener('click', () => saveUrl());
+      $('clearScriptUrlBtn').addEventListener('click', clearUrl);
+      $('settingsSyncBtn').addEventListener('click', () => syncFromSheet('manual'));
+      $('dashboardSyncBtn').addEventListener('click', () => syncFromSheet('manual'));
+      $('addSubmitBtn').addEventListener('click', addTransaction);
+      $('dashBank').addEventListener('change', e => {
+        state.selectedBank = e.target.value;
+        renderAll();
+      });
+      $('dashMonth').addEventListener('change', e => {
+        state.selectedMonth = Number(e.target.value);
+        renderAll();
+      });
+      $('dashYear').addEventListener('change', e => {
+        state.selectedYear = Number(e.target.value);
+        renderAll();
+      });
+    }
 
-/* ---- Add transaction ---- */
-async function addTransaction() {
-  const date = $('f-date').value;
-  const bank = $('f-bank').value;
-  const type = document.querySelector('input[name="txtype"]:checked').value;
-  const cat  = $('f-cat').value.trim();
-  const amt  = $('f-amt').value;
-  const desc = $('f-desc').value.trim();
+    async function init() {
+      bindEvents();
+      loadSavedUrl();
+      populateControls();
+      renderAll();
+      if (state.scriptUrl) {
+        await syncFromSheet('auto');
+      } else {
+        setGlobalStatus('Save Apps Script URL in Settings to enable auto sync.', true);
+      }
+    }
 
-  if (!date) return setFormStatus('Please pick a date.', true);
-  if (!cat)  return setFormStatus('Please enter a category.', true);
-  if (!amt || Number(amt) <= 0) return setFormStatus('Enter a valid amount.', true);
-  if (!state.scriptUrl) return setFormStatus('Paste the script URL and click Save first.', true);
-
-  setFormStatus('Saving…');
-  const params = new URLSearchParams({ action:'write', date, bank, type, category:cat, amount:amt, description:desc });
-  const res  = await fetch(`${state.scriptUrl}?${params}`);
-  const data = await res.json();
-  if (data.status !== 'ok') throw new Error(data.message||'Write failed');
-
-  state.transactions = data.transactions || [];
-  const serverBanks = data.banks || [...new Set(state.transactions.map(t=>t.bank))].sort();
-  state.banks = ['All Banks', ...serverBanks];
-  if (state.bankIndex >= state.banks.length) state.bankIndex = 0;
-  renderAll();
-  $('f-amt').value  = '';
-  $('f-desc').value = '';
-  setFormStatus(`Saved ₹${Number(amt).toLocaleString('en-IN')} successfully.`);
-}
-
-function setSyncStatus(msg, err=false) { const el=$('syncStatus'); el.textContent=msg; el.style.color=err?'var(--red)':'var(--muted)'; }
-function setFormStatus(msg, err=false) { const el=$('formStatus'); el.textContent=msg; el.style.color=err?'var(--red)':'var(--muted)'; }
-
-/* ---- Events ---- */
-$('saveUrlBtn').addEventListener('click', () => {
-  state.scriptUrl = $('scriptUrl').value.trim();
-  setSyncStatus(state.scriptUrl ? 'URL saved. Click Refresh to load data.' : 'Paste a valid URL.', !state.scriptUrl);
-});
-$('refreshBtn').addEventListener('click', async () => {
-  state.scriptUrl = $('scriptUrl').value.trim() || state.scriptUrl;
-  try { await syncFromSheet(); } catch(e) { setSyncStatus(e.message||'Sync failed.', true); }
-});
-$('prevBank').addEventListener('click', () => {
-  state.bankIndex = (state.bankIndex - 1 + state.banks.length) % state.banks.length;
-  renderBankChart(); renderTopSpend();
-});
-$('nextBank').addEventListener('click', () => {
-  state.bankIndex = (state.bankIndex + 1) % state.banks.length;
-  renderBankChart(); renderTopSpend();
-});
-$('fMonth').addEventListener('change', e => { state.month = Number(e.target.value); renderAll(); });
-$('fYear').addEventListener('change',  e => { state.year  = Number(e.target.value); renderAll(); });
-$('addBtn').addEventListener('click',  async () => {
-  try { await addTransaction(); } catch(e) { setFormStatus(e.message||'Error saving.', true); }
-});
-
-/* ---- Init ---- */
-$('f-date').value = new Date().toISOString().slice(0,10);
-populateFilters();
-renderAll();
-</script>
+    init();
+  </script>
 </body>
 </html>
