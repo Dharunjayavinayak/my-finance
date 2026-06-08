@@ -128,10 +128,10 @@ tr:hover td{background:var(--surface2)}
 <!-- DASHBOARD -->
 <div id="page-dashboard" class="page active">
   <div class="stats-row">
-    <div class="stat-card"><div class="lbl">Total Invested</div><div class="val" id="d-total">—</div></div>
-    <div class="stat-card"><div class="lbl">Stocks</div><div class="val" id="d-stocks">—</div></div>
-    <div class="stat-card"><div class="lbl">Mutual Funds (SIP)</div><div class="val" id="d-mf">—</div></div>
-    <div class="stat-card"><div class="lbl">Gold &amp; Silver</div><div class="val" id="d-gs">—</div></div>
+    <div class="stat-card"><div class="lbl">Total Invested</div><div class="val" id="d-total">₹0</div></div>
+    <div class="stat-card"><div class="lbl">Stocks</div><div class="val" id="d-stocks">₹0</div></div>
+    <div class="stat-card"><div class="lbl">Mutual Funds (SIP)</div><div class="val" id="d-mf">₹0</div></div>
+    <div class="stat-card"><div class="lbl">Gold &amp; Silver</div><div class="val" id="d-gs">₹0</div></div>
   </div>
   <div class="grid2">
     <div class="card">
@@ -150,8 +150,8 @@ tr:hover td{background:var(--surface2)}
     <div style="position:relative;height:200px;margin-top:8px"><canvas id="monthChart"></canvas></div>
   </div>
   <div class="grid2">
-    <div class="card"><div class="card-title">Grow Invest</div><div class="val num" id="d-grow" style="font-size:20px">—</div></div>
-    <div class="card"><div class="card-title">Zerodha</div><div class="val num" id="d-zerodha" style="font-size:20px">—</div></div>
+    <div class="card"><div class="card-title">Grow Invest</div><div class="val num" id="d-grow" style="font-size:20px">₹0</div></div>
+    <div class="card"><div class="card-title">Zerodha</div><div class="val num" id="d-zerodha" style="font-size:20px">₹0</div></div>
   </div>
 </div>
 
@@ -159,15 +159,15 @@ tr:hover td{background:var(--surface2)}
 <div id="page-stocks" class="page">
   <div class="section-label">Stocks</div>
   <div class="stats-row">
-    <div class="stat-card"><div class="lbl">Total invested</div><div class="val" id="s-total">—</div></div>
-    <div class="stat-card"><div class="lbl">Transactions</div><div class="val" id="s-count">—</div></div>
+    <div class="stat-card"><div class="lbl">Total invested</div><div class="val" id="s-total">₹0</div></div>
+    <div class="stat-card"><div class="lbl">Transactions</div><div class="val" id="s-count">0</div></div>
   </div>
   <div class="card">
     <div class="card-title">All transactions</div>
     <div class="tbl-wrap">
       <table id="stocks-table">
         <thead><tr><th>Date</th><th>Group</th><th>Name</th><th>Price</th><th>Qty</th><th>Amount</th></tr></thead>
-        <tbody></tbody>
+        <tbody><tr><td colspan="6" class="empty">No data — sync from Settings</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -177,15 +177,15 @@ tr:hover td{background:var(--surface2)}
 <div id="page-sip" class="page">
   <div class="section-label">SIP — Mutual Funds</div>
   <div class="stats-row">
-    <div class="stat-card"><div class="lbl">Total invested</div><div class="val" id="sip-total">—</div></div>
-    <div class="stat-card"><div class="lbl">Instalments</div><div class="val" id="sip-count">—</div></div>
+    <div class="stat-card"><div class="lbl">Total invested</div><div class="val" id="sip-total">₹0</div></div>
+    <div class="stat-card"><div class="lbl">Instalments</div><div class="val" id="sip-count">0</div></div>
   </div>
   <div class="card">
     <div class="card-title">SIP transactions</div>
     <div class="tbl-wrap">
       <table id="sip-table">
         <thead><tr><th>Date</th><th>Group</th><th>Fund name</th><th>Amount</th></tr></thead>
-        <tbody></tbody>
+        <tbody><tr><td colspan="4" class="empty">No data — sync from Settings</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -195,15 +195,15 @@ tr:hover td{background:var(--surface2)}
 <div id="page-gold" class="page">
   <div class="section-label">Gold &amp; Silver</div>
   <div class="stats-row">
-    <div class="stat-card"><div class="lbl">Total invested</div><div class="val" id="g-total">—</div></div>
-    <div class="stat-card"><div class="lbl">Transactions</div><div class="val" id="g-count">—</div></div>
+    <div class="stat-card"><div class="lbl">Total invested</div><div class="val" id="g-total">₹0</div></div>
+    <div class="stat-card"><div class="lbl">Transactions</div><div class="val" id="g-count">0</div></div>
   </div>
   <div class="card">
     <div class="card-title">All holdings</div>
     <div class="tbl-wrap">
       <table id="gold-table">
         <thead><tr><th>Date</th><th>Group</th><th>Name</th><th>Price</th><th>Qty</th><th>Amount</th></tr></thead>
-        <tbody></tbody>
+        <tbody><tr><td colspan="6" class="empty">No data — sync from Settings</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -245,7 +245,7 @@ tr:hover td{background:var(--surface2)}
           </div>
         </div>
         <div class="field">
-          <label>Price per share (₹)</label>
+          <label>Price per share (&#8377;)</label>
           <input type="number" id="s-price" placeholder="0.00">
         </div>
       </div>
@@ -255,7 +255,7 @@ tr:hover td{background:var(--surface2)}
           <input type="number" id="s-qty" placeholder="1">
         </div>
         <div class="field">
-          <label>Amount (₹)</label>
+          <label>Amount (&#8377;)</label>
           <input type="number" id="s-amount" placeholder="auto" readonly style="opacity:.6">
         </div>
       </div>
@@ -287,7 +287,7 @@ tr:hover td{background:var(--surface2)}
       </div>
       <div class="form-row single">
         <div class="field">
-          <label>Amount (₹)</label>
+          <label>Amount (&#8377;)</label>
           <input type="number" id="sip-amount" placeholder="500">
         </div>
       </div>
@@ -316,7 +316,7 @@ tr:hover td{background:var(--surface2)}
           </div>
         </div>
         <div class="field">
-          <label>Price (₹)</label>
+          <label>Price (&#8377;)</label>
           <input type="number" id="gs-price" placeholder="0.00">
         </div>
       </div>
@@ -326,7 +326,7 @@ tr:hover td{background:var(--surface2)}
           <input type="number" id="gs-qty" placeholder="0.0000" step="0.0001">
         </div>
         <div class="field">
-          <label>Amount (₹)</label>
+          <label>Amount (&#8377;)</label>
           <input type="number" id="gs-amount" placeholder="auto" readonly style="opacity:.6">
         </div>
       </div>
@@ -349,7 +349,7 @@ tr:hover td{background:var(--surface2)}
     </div>
     <br>
     <button class="save-btn" onclick="saveAndSync()">Save &amp; Sync</button>
-    <div class="url-status" id="url-status">✓ Saved. Syncing…</div>
+    <div class="url-status" id="url-status">&#10003; Saved. Syncing&#8230;</div>
   </div>
 </div>
 
@@ -391,7 +391,9 @@ if (SCRIPT_URL) {
 // ─── NAVIGATION ───────────────────────────────────────────────────
 function showPage(name) {
   var pages = document.querySelectorAll('.page');
-  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  for (var i = 0; i < pages.length; i++) {
+    pages[i].classList.remove('active');
+  }
   document.getElementById('page-' + name).classList.add('active');
   var btns = document.querySelectorAll('nav button');
   var names = ['dashboard','stocks','sip','gold','add','settings'];
@@ -407,7 +409,7 @@ function setType(type) {
   var types = ['Stocks','SIP','GoldSilver'];
   for (var i = 0; i < tabs.length; i++) {
     tabs[i].classList.toggle('active', types[i] === type);
-    document.getElementById('fields-' + types[i]).style.display = types[i] === type ? '' : 'none';
+    document.getElementById('fields-' + types[i]).style.display = (types[i] === type) ? '' : 'none';
   }
 }
 
@@ -426,7 +428,7 @@ function saveAndSync() {
 // ─── HELPERS ──────────────────────────────────────────────────────
 function fmt(n) {
   var num = parseFloat(n);
-  if (isNaN(num)) return '—';
+  if (isNaN(num)) return '₹0';
   return '₹' + num.toLocaleString('en-IN', { maximumFractionDigits: 0 });
 }
 
@@ -473,26 +475,22 @@ function setDefaultDates() {
 }
 
 function bindAmountCalc() {
-  document.getElementById('s-price').addEventListener('input', function() {
-    var p = parseFloat(document.getElementById('s-price').value) || 0;
-    var q = parseFloat(document.getElementById('s-qty').value) || 0;
-    document.getElementById('s-amount').value = (p && q) ? (p * q).toFixed(2) : '';
-  });
-  document.getElementById('s-qty').addEventListener('input', function() {
-    var p = parseFloat(document.getElementById('s-price').value) || 0;
-    var q = parseFloat(document.getElementById('s-qty').value) || 0;
-    document.getElementById('s-amount').value = (p && q) ? (p * q).toFixed(2) : '';
-  });
-  document.getElementById('gs-price').addEventListener('input', function() {
-    var p = parseFloat(document.getElementById('gs-price').value) || 0;
-    var q = parseFloat(document.getElementById('gs-qty').value) || 0;
-    document.getElementById('gs-amount').value = (p && q) ? (p * q).toFixed(4) : '';
-  });
-  document.getElementById('gs-qty').addEventListener('input', function() {
-    var p = parseFloat(document.getElementById('gs-price').value) || 0;
-    var q = parseFloat(document.getElementById('gs-qty').value) || 0;
-    document.getElementById('gs-amount').value = (p && q) ? (p * q).toFixed(4) : '';
-  });
+  document.getElementById('s-price').addEventListener('input', calcStockAmt);
+  document.getElementById('s-qty').addEventListener('input', calcStockAmt);
+  document.getElementById('gs-price').addEventListener('input', calcGsAmt);
+  document.getElementById('gs-qty').addEventListener('input', calcGsAmt);
+}
+
+function calcStockAmt() {
+  var p = parseFloat(document.getElementById('s-price').value) || 0;
+  var q = parseFloat(document.getElementById('s-qty').value) || 0;
+  document.getElementById('s-amount').value = (p && q) ? (p * q).toFixed(2) : '';
+}
+
+function calcGsAmt() {
+  var p = parseFloat(document.getElementById('gs-price').value) || 0;
+  var q = parseFloat(document.getElementById('gs-qty').value) || 0;
+  document.getElementById('gs-amount').value = (p && q) ? (p * q).toFixed(4) : '';
 }
 
 function bindGroupChanges() {
@@ -649,24 +647,27 @@ function initAC(inputId, dropId, getNames, onPick) {
 
 // ─── FETCH ────────────────────────────────────────────────────────
 function fetchAll() {
-  if (!SCRIPT_URL) return;
+  if (!SCRIPT_URL) { renderAll(); return; }
   fetch(SCRIPT_URL + '?action=read&t=' + Date.now())
     .then(function(res) { return res.json(); })
     .then(function(json) {
-      ['Stocks','SIP','GoldSilver'].forEach(function(sheet) {
+      var sheets = ['Stocks','SIP','GoldSilver'];
+      for (var s = 0; s < sheets.length; s++) {
+        var sheet = sheets[s];
         var rows = json[sheet] || [];
-        if (rows.length < 2) { allData[sheet] = []; return; }
+        if (rows.length < 2) { allData[sheet] = []; continue; }
         var headers = rows[0].map(function(h) { return String(h).trim().replace(/^'/, ''); });
         allData[sheet] = rows.slice(1).map(function(row) {
           var obj = {};
           headers.forEach(function(h, i) { obj[h] = row[i]; });
           return obj;
         }).filter(function(r) { return r.Date || r.date; });
-      });
+      }
       renderAll();
     })
     .catch(function(err) {
       console.error('Sync failed:', err);
+      renderAll();
     });
 }
 
@@ -804,6 +805,7 @@ function renderGoldTable() {
 }
 
 // ─── SUBMIT ───────────────────────────────────────────────────────
+// FIX: All var declarations hoisted to top — no duplicate var inside if/else branches
 function submitTx() {
   var btn = document.getElementById('submit-btn');
   var status = document.getElementById('form-status');
@@ -817,49 +819,52 @@ function submitTx() {
   var row = [];
   var sheet = activeType;
 
+  // Declare all variables up front to avoid duplicate var issues
+  var txDate, txGroup, txName, txPrice, txQty, txAmount;
+
   if (activeType === 'Stocks') {
-    var date  = document.getElementById('s-date').value;
-    var group = document.getElementById('s-group').value;
-    var name  = document.getElementById('s-name').value.trim();
-    var price = parseFloat(document.getElementById('s-price').value);
-    var qty   = parseFloat(document.getElementById('s-qty').value);
-    if (!date || !name || !price || !qty) {
+    txDate  = document.getElementById('s-date').value;
+    txGroup = document.getElementById('s-group').value;
+    txName  = document.getElementById('s-name').value.trim();
+    txPrice = parseFloat(document.getElementById('s-price').value);
+    txQty   = parseFloat(document.getElementById('s-qty').value);
+    if (!txDate || !txName || !txPrice || !txQty) {
       status.className = 'status-bar error';
       status.textContent = 'Please fill all fields.';
       return;
     }
-    row = [toSheetDate(date), group, name, price, qty, parseFloat((price * qty).toFixed(2))];
+    row = [toSheetDate(txDate), txGroup, txName, txPrice, txQty, parseFloat((txPrice * txQty).toFixed(2))];
 
   } else if (activeType === 'SIP') {
-    var date   = document.getElementById('sip-date').value;
-    var group  = document.getElementById('sip-group').value;
-    var name   = document.getElementById('sip-name').value.trim();
-    var amount = parseFloat(document.getElementById('sip-amount').value);
-    if (!date || !name || !amount) {
+    txDate   = document.getElementById('sip-date').value;
+    txGroup  = document.getElementById('sip-group').value;
+    txName   = document.getElementById('sip-name').value.trim();
+    txAmount = parseFloat(document.getElementById('sip-amount').value);
+    if (!txDate || !txName || !txAmount) {
       status.className = 'status-bar error';
       status.textContent = 'Please fill all fields.';
       return;
     }
-    row = [toSheetDate(date), group, name, amount];
+    row = [toSheetDate(txDate), txGroup, txName, txAmount];
 
   } else {
-    var date  = document.getElementById('gs-date').value;
-    var group = document.getElementById('gs-group').value;
-    var name  = document.getElementById('gs-name').value.trim();
-    var price = parseFloat(document.getElementById('gs-price').value);
-    var qty   = parseFloat(document.getElementById('gs-qty').value);
-    if (!date || !name || !price || !qty) {
+    txDate  = document.getElementById('gs-date').value;
+    txGroup = document.getElementById('gs-group').value;
+    txName  = document.getElementById('gs-name').value.trim();
+    txPrice = parseFloat(document.getElementById('gs-price').value);
+    txQty   = parseFloat(document.getElementById('gs-qty').value);
+    if (!txDate || !txName || !txPrice || !txQty) {
       status.className = 'status-bar error';
       status.textContent = 'Please fill all fields.';
       return;
     }
-    row = [toSheetDate(date), group, name, price, qty, parseFloat((price * qty).toFixed(4))];
+    row = [toSheetDate(txDate), txGroup, txName, txPrice, txQty, parseFloat((txPrice * txQty).toFixed(4))];
   }
 
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Saving…';
+  btn.innerHTML = '<span class="spinner"></span>Saving\u2026';
   status.className = 'status-bar loading';
-  status.textContent = 'Sending to Google Sheets…';
+  status.textContent = 'Sending to Google Sheets\u2026';
 
   fetch(SCRIPT_URL, {
     method: 'POST',
@@ -868,7 +873,7 @@ function submitTx() {
     body: JSON.stringify({ sheet: sheet, row: row })
   }).then(function() {
     status.className = 'status-bar success';
-    status.textContent = '✓ Saved to Google Sheets!';
+    status.textContent = '\u2713 Saved to Google Sheets!';
     clearForm();
     setTimeout(fetchAll, 1500);
   }).catch(function() {
@@ -881,9 +886,10 @@ function submitTx() {
 }
 
 function clearForm() {
-  ['s-name','s-price','s-qty','s-amount'].forEach(function(id) { document.getElementById(id).value = ''; });
-  ['sip-name','sip-amount'].forEach(function(id) { document.getElementById(id).value = ''; });
-  ['gs-name','gs-price','gs-qty','gs-amount'].forEach(function(id) { document.getElementById(id).value = ''; });
+  var ids = ['s-name','s-price','s-qty','s-amount','sip-name','sip-amount','gs-name','gs-price','gs-qty','gs-amount'];
+  for (var i = 0; i < ids.length; i++) {
+    document.getElementById(ids[i]).value = '';
+  }
 }
 </script>
 </body>
