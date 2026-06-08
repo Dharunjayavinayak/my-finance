@@ -867,26 +867,23 @@ function submitTx() {
   status.textContent = 'Sending to Google Sheets\u2026';
 
   fetch(SCRIPT_URL, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ sheet: sheet, row: row })
-})
-.then(function(res) { return res.json(); })
-.then(function(result) {
-  if (!result.ok) throw new Error(result.error || 'Save failed');
-  status.className = 'status-bar success';
-  status.textContent = '✓ Saved to Google Sheets!';
-  clearForm();
-  setTimeout(fetchAll, 800);
-})
-.catch(function(err) {
-  status.className = 'status-bar error';
-  status.textContent = err.message || 'Error saving. Check your Script URL in Settings.';
-})
-.finally(function() {
-  btn.disabled = false;
-  btn.innerHTML = 'Save transaction';
-});
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sheet: sheet, row: row })
+  }).then(function() {
+    status.className = 'status-bar success';
+    status.textContent = '\u2713 Saved to Google Sheets!';
+    clearForm();
+    setTimeout(fetchAll, 1500);
+  }).catch(function() {
+    status.className = 'status-bar error';
+    status.textContent = 'Error saving. Check your Script URL in Settings.';
+  }).finally(function() {
+    btn.disabled = false;
+    btn.innerHTML = 'Save transaction';
+  });
+}
 
 function clearForm() {
   var ids = ['s-name','s-price','s-qty','s-amount','sip-name','sip-amount','gs-name','gs-price','gs-qty','gs-amount'];
