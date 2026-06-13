@@ -531,7 +531,7 @@ function renderExpenseCard(banksData) {
 // ════════════════════════════════
 async function fetchInvestData() {
   let scriptUrl = "";
-  try { scriptUrl = localStorage.getItem("pt_script_url") || ""; } catch(e){}
+  try { scriptUrl = localStorage.getItem("ptscripturl") || ""; } catch(e){}
   if (!scriptUrl) return null;
   try {
     const res = await fetch(scriptUrl + "?action=read&t=" + Date.now());
@@ -557,7 +557,7 @@ async function fetchInvestData() {
 
 async function fetchExpenseData() {
   let scriptUrl = "";
-  try { scriptUrl = localStorage.getItem("dharun_finances_script_url") || ""; } catch(e){}
+  try { scriptUrl = localStorage.getItem("dharunfinancesscripturl") || ""; } catch(e){}
   if (!scriptUrl) return null;
   try {
     const sep = scriptUrl.includes("?") ? "&" : "?";
@@ -584,8 +584,8 @@ async function initDashboard() {
 
   // Check if script URLs are saved
   let invUrl="", expUrl="";
-  try { invUrl = localStorage.getItem("pt_script_url") || ""; } catch(e){}
-  try { expUrl = localStorage.getItem("dharun_finances_script_url") || ""; } catch(e){}
+  try { invUrl = localStorage.getItem("ptscripturl") || ""; } catch(e){}
+  try { expUrl = localStorage.getItem("dharunfinancesscripturl") || ""; } catch(e){}
 
   let invOk = false, expOk = false;
 
