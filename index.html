@@ -1,1018 +1,634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dharun Finances</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-  <style>
-    :root {
-      --bg: #f6f8fc;
-      --surface: #ffffff;
-      --surface-soft: #f9fbff;
-      --text: #111827;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --primary: #2563eb;
-      --primary-soft: #eaf2ff;
-      --green: #16a34a;
-      --green-soft: #e9f9ef;
-      --red: #dc2626;
-      --red-soft: #fdecec;
-      --blue-soft: #eaf2ff;
-      --purple: #7c3aed;
-      --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
-      --radius: 18px;
-      --radius-sm: 12px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    button, input, select, textarea { font: inherit; }
-    .app { max-width: 1400px; margin: 0 auto; padding: 24px; }
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: var(--primary);
-      display: grid;
-      place-items: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 22px;
-      box-shadow: var(--shadow);
-    }
-    .brand h1 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-    }
-    .brand p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .sync-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      color: var(--muted);
-      font-size: 13px;
-      box-shadow: var(--shadow);
-    }
-    .tabs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-    .tab-btn {
-      border: 1px solid var(--line);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 11px 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s ease;
-      box-shadow: var(--shadow);
-    }
-    .tab-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px;
-    }
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-    .section-title {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 800;
-    }
-    .section-sub {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .filters {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .control, .text-input, .text-area {
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      min-height: 46px;
-      outline: none;
-      transition: 0.2s ease;
-    }
-    .control:focus, .text-input:focus, .text-area:focus { border-color: var(--primary); }
-    .btn {
-      border: 1px solid transparent;
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-    }
-    .btn-soft {
-      background: var(--primary-soft);
-      color: var(--primary);
-      border-color: transparent;
-    }
-    .btn-outline {
-      background: #fff;
-      color: var(--text);
-      border-color: var(--line);
-    }
-    .btn:hover { opacity: 0.92; }
-    .add-wrap {
-      max-width: 680px;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .field.full { grid-column: 1 / -1; }
-    .field label {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-    .text-area { min-height: 100px; resize: vertical; }
-    .type-switch {
-      display: inline-flex;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 4px;
-      gap: 4px;
-    }
-    .type-switch button {
-      border: none;
-      background: transparent;
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: pointer;
-      color: var(--muted);
-    }
-    .type-switch button.active.outflow {
-      background: var(--red-soft);
-      color: var(--red);
-    }
-    .type-switch button.active.inflow {
-      background: var(--green-soft);
-      color: var(--green);
-    }
-    .status-text {
-      margin-top: 14px;
-      font-size: 13px;
-      color: var(--muted);
-      min-height: 18px;
-    }
-    .dashboard-grid {
-      display: grid;
-      gap: 20px;
-    }
-    .metric-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-    .metric {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 20px;
-      background: #fff;
-    }
-    .metric-top {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .metric-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-size: 24px;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-    .metric-icon.green { background: var(--green-soft); color: var(--green); }
-    .metric-icon.red { background: var(--red-soft); color: var(--red); }
-    .metric-icon.blue { background: var(--blue-soft); color: var(--primary); }
-    .metric-label { font-size: 14px; color: var(--muted); font-weight: 600; }
-    .metric-value { font-size: 34px; font-weight: 800; margin-top: 4px; }
-    .metric-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
-    .chart-grid {
-      display: grid;
-      grid-template-columns: 1.25fr 0.95fr;
-      gap: 20px;
-    }
-    .top-spending {
-      margin-top: 20px;
-    }
-    .spend-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .spend-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 16px;
-      background: var(--surface-soft);
-    }
-    .spend-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-    .spend-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: var(--primary-soft);
-      color: var(--primary);
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-    .spend-name {
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .spend-meta {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 3px;
-    }
-    .spend-right {
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .spend-amt {
-      font-weight: 800;
-      color: var(--text);
-    }
-    .spend-date {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 3px;
-    }
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-    }
-    th, td {
-      padding: 14px;
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-      white-space: nowrap;
-      font-size: 14px;
-    }
-    th {
-      font-size: 12px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      background: #fafbff;
-    }
-    tr:last-child td { border-bottom: none; }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .badge-bank { background: var(--primary-soft); color: var(--primary); }
-    .badge-in { background: var(--green-soft); color: var(--green); }
-    .badge-out { background: var(--red-soft); color: var(--red); }
-    .settings-wrap {
-      max-width: 760px;
-      display: grid;
-      gap: 20px;
-    }
-    .settings-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .settings-row .text-input { flex: 1 1 380px; }
-    .settings-help {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-    .muted-center {
-      color: var(--muted);
-      text-align: center;
-      padding: 24px 8px;
-      font-size: 14px;
-    }
-    @media (max-width: 1100px) {
-      .chart-grid { grid-template-columns: 1fr; }
-      .metric-row { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 760px) {
-      .app { padding: 16px; }
-      .form-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dharun Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{
+  font-family:'Manrope',sans-serif;
+  background:#f0f0f8;
+  min-height:100dvh;
+  color:#1e1b3a;
+}
+
+/* ── PIN OVERLAY ── */
+#pin-overlay{
+  position:fixed;inset:0;z-index:999;
+  background:linear-gradient(145deg,#e8e8f8 0%,#f0ecff 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+#pin-overlay.hidden{display:none}
+.pin-box{
+  background:#fff;border-radius:28px;padding:40px 36px;
+  box-shadow:0 24px 64px rgba(80,60,180,0.14);
+  max-width:360px;width:90%;text-align:center;
+}
+.pin-logo{
+  width:58px;height:58px;border-radius:18px;
+  background:linear-gradient(135deg,#7c6ef5,#5b4fd4);
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-bottom:18px;
+}
+.pin-logo svg{width:28px;height:28px;color:#fff;stroke:#fff}
+.pin-box h2{font-size:20px;font-weight:800;color:#1e1b3a;margin-bottom:6px}
+.pin-box p{font-size:13px;color:#8882aa;margin-bottom:28px}
+.pin-dots{display:flex;gap:14px;justify-content:center;margin-bottom:28px}
+.pin-dot{
+  width:18px;height:18px;border-radius:999px;
+  border:2px solid #c9c4e8;background:transparent;
+  transition:.2s;
+}
+.pin-dot.filled{background:#7c6ef5;border-color:#7c6ef5}
+.pin-dot.error{background:#ef4444;border-color:#ef4444}
+.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pin-key{
+  border:none;background:#f4f2ff;border-radius:16px;
+  padding:17px;font-size:18px;font-weight:800;color:#1e1b3a;
+  cursor:pointer;transition:.15s;
+}
+.pin-key:hover{background:#ebe7ff}
+.pin-key:active{transform:scale(.94)}
+.pin-key.del{background:#fff0f0;color:#ef4444}
+.pin-key.del:hover{background:#ffe4e4}
+.pin-error{
+  font-size:13px;color:#ef4444;font-weight:700;
+  min-height:18px;margin-top:10px;
+}
+
+/* ── MAIN APP ── */
+#app{display:none}
+#app.visible{display:block}
+.page{
+  max-width:430px;margin:0 auto;
+  padding:0 0 100px 0;
+  min-height:100dvh;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 20px 8px;
+}
+.topbar h1{font-size:26px;font-weight:800;color:#1e1b3a;letter-spacing:-.02em}
+.fab{
+  width:50px;height:50px;border-radius:18px;
+  background:linear-gradient(135deg,#7c6ef5,#5b4fd4);
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 24px rgba(92,75,212,.35);
+  transition:.15s;position:relative;
+}
+.fab:hover{transform:scale(1.07)}
+.fab svg{width:24px;height:24px;stroke:#fff;stroke-width:2.5;fill:none}
+
+/* FAB menu */
+.fab-menu{
+  position:absolute;top:calc(100% + 10px);right:0;
+  background:#fff;border-radius:18px;padding:8px;
+  box-shadow:0 12px 40px rgba(80,60,180,0.18);
+  min-width:200px;
+  display:none;z-index:50;
+}
+.fab-menu.open{display:block}
+.fab-menu a{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 14px;border-radius:12px;text-decoration:none;
+  font-size:14px;font-weight:700;color:#1e1b3a;
+}
+.fab-menu a:hover{background:#f4f2ff}
+.fab-menu a .ficon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;
+}
+
+/* ── SECTION CARD ── */
+.section-card{
+  background:#fff;border-radius:24px;
+  margin:10px 14px;
+  box-shadow:0 4px 20px rgba(80,60,180,0.07);
+  overflow:hidden;
+}
+.card-header{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 18px 14px;
+}
+.card-icon{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card-icon svg{width:22px;height:22px;stroke-width:2;fill:none}
+.card-header-text h2{font-size:16px;font-weight:800;color:#1e1b3a;margin:0}
+.card-header-text p{font-size:12px;color:#8882aa;margin:2px 0 0}
+
+/* ── INVEST CARD ── */
+.invest-icon{background:#ede9ff}
+.invest-icon svg{stroke:#7c6ef5}
+.invest-donut-wrap{padding:0 18px 16px;display:flex;align-items:center;gap:24px}
+.donut-chart-box{position:relative;width:160px;height:160px;flex-shrink:0}
+.donut-chart-box canvas{width:160px!important;height:160px!important}
+.donut-center{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.donut-label{font-size:11px;color:#8882aa;font-weight:600}
+.donut-value{font-size:17px;font-weight:800;color:#1e1b3a;line-height:1.2}
+.donut-delta{font-size:12px;font-weight:700;color:#22c55e}
+.invest-legend{flex:1;display:flex;flex-direction:column;gap:10px}
+.legend-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.legend-left{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#1e1b3a}
+.legend-dot{width:12px;height:12px;border-radius:999px;flex-shrink:0}
+.legend-pct{font-size:14px;font-weight:700;color:#8882aa}
+
+.invest-open{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:16px;margin:0 14px 0;
+  background:#f4f2ff;border-radius:14px;
+  font-size:14px;font-weight:800;color:#7c6ef5;
+  text-decoration:none;cursor:pointer;border:none;width:calc(100% - 28px);
+  transition:.15s;
+}
+.invest-open:hover{background:#ede9ff}
+.invest-open svg{width:16px;height:16px;stroke:#7c6ef5;fill:none;stroke-width:2.5}
+.invest-card-bottom{padding-bottom:6px}
+
+/* ── EXPENSE CARD ── */
+.expense-icon{background:#e6faf2}
+.expense-icon svg{stroke:#16a34a}
+.bank-list{display:flex;flex-direction:column}
+.bank-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;border-bottom:1px solid #f3f4f8;
+  cursor:pointer;text-decoration:none;color:inherit;
+}
+.bank-row:last-child{border-bottom:none}
+.bank-row:hover{background:#f9fafb}
+.bank-left{display:flex;align-items:center;gap:14px}
+.bank-logo{
+  width:44px;height:44px;border-radius:14px;overflow:hidden;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;
+}
+.bank-info h3{font-size:14px;font-weight:800;color:#1e1b3a;margin:0}
+.bank-info p{font-size:12px;color:#8882aa;margin:2px 0 0}
+.bank-right{text-align:right;flex-shrink:0}
+.bank-amount{font-size:15px;font-weight:800;color:#1e1b3a}
+.bank-label{font-size:11px;color:#22c55e;font-weight:600;margin-top:2px}
+.bank-arrow{color:#c9c4e8;font-size:16px}
+
+.expense-open{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:16px;margin:10px 14px 0;
+  background:#e6faf2;border-radius:14px;
+  font-size:14px;font-weight:800;color:#16a34a;
+  text-decoration:none;cursor:pointer;border:none;width:calc(100% - 28px);
+  transition:.15s;
+}
+.expense-open:hover{background:#d1fae5}
+.expense-open svg{width:16px;height:16px;stroke:#16a34a;fill:none;stroke-width:2.5}
+.expense-card-bottom{padding-bottom:6px}
+
+/* sync status */
+.sync-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 20px 4px;font-size:12px;color:#8882aa;font-weight:600;
+}
+.sync-dot{width:8px;height:8px;border-radius:999px;background:#8882aa;flex-shrink:0}
+.sync-dot.ok{background:#22c55e}
+.sync-dot.err{background:#ef4444}
+</style>
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-mark">D</div>
-        <div>
-          <h1>Dharun Finances</h1>
-          <p>Personal tracker · GitHub Pages · Google Sheets sync</p>
-        </div>
-      </div>
-      <div class="sync-chip" id="globalSyncStatus">Waiting for sync…</div>
+
+<!-- ╔══════════════════════ PIN OVERLAY ══════════════════════╗ -->
+<div id="pin-overlay">
+  <div class="pin-box">
+    <div class="pin-logo">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="3" stroke-width="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2"/>
+      </svg>
     </div>
-
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="add">Add</button>
-      <button class="tab-btn" data-tab="dashboard">Dashboard</button>
-      <button class="tab-btn" data-tab="history">History</button>
-      <button class="tab-btn" data-tab="settings">Settings</button>
+    <h2>Enter your PIN</h2>
+    <p>Enter your 4-digit PIN to access your dashboard</p>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
     </div>
-
-    <section class="tab-panel active" id="tab-add">
-      <div class="card add-wrap">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">Add transaction</h2>
-            <p class="section-sub">Add an inflow or outflow and sync it to Google Sheets.</p>
-          </div>
-        </div>
-        <div class="form-grid">
-          <div class="field">
-            <label>Date</label>
-            <input class="text-input" id="addDate" type="date" />
-          </div>
-          <div class="field">
-            <label>Bank</label>
-            <select class="control" id="addBank"></select>
-          </div>
-          <div class="field full">
-            <label>Type</label>
-            <div class="type-switch">
-              <button type="button" class="active outflow" id="typeOutBtn">Outflow</button>
-              <button type="button" class="inflow" id="typeInBtn">Inflow</button>
-            </div>
-          </div>
-          <div class="field">
-            <label>Category</label>
-            <input class="text-input" id="addCategory" type="text" placeholder="Food, Salary, Petrol..." />
-          </div>
-          <div class="field">
-            <label>Amount</label>
-            <input class="text-input" id="addAmount" type="number" min="0" step="0.01" placeholder="0" />
-          </div>
-          <div class="field full">
-            <label>Description</label>
-            <textarea class="text-area" id="addDescription" placeholder="Reason / notes"></textarea>
-          </div>
-          <div class="field full">
-            <button class="btn btn-primary" id="addSubmitBtn">Add transaction</button>
-          </div>
-        </div>
-        <div class="status-text" id="addStatus"></div>
-      </div>
-    </section>
-
-    <section class="tab-panel" id="tab-dashboard">
-      <div class="dashboard-grid">
-        <div class="card">
-          <div class="section-head">
-            <div>
-              <h2 class="section-title">Dashboard</h2>
-              <p class="section-sub">Bank-wise report for the selected month and year.</p>
-            </div>
-            <div class="filters">
-              <select class="control" id="dashBank"></select>
-              <select class="control" id="dashMonth"></select>
-              <select class="control" id="dashYear"></select>
-              <button class="btn btn-soft" id="dashboardSyncBtn">Sync</button>
-            </div>
-          </div>
-
-          <div class="metric-row">
-            <div class="metric">
-              <div class="metric-top">
-                <div class="metric-icon green">↓</div>
-                <div>
-                  <div class="metric-label">Inflow</div>
-                  <div class="metric-value" id="metricInflow" style="color: var(--green);">₹0</div>
-                </div>
-              </div>
-              <div class="metric-note" id="metricInflowNote">Selected bank · selected period</div>
-            </div>
-            <div class="metric">
-              <div class="metric-top">
-                <div class="metric-icon red">↑</div>
-                <div>
-                  <div class="metric-label">Outflow</div>
-                  <div class="metric-value" id="metricOutflow" style="color: var(--red);">₹0</div>
-                </div>
-              </div>
-              <div class="metric-note" id="metricOutflowNote">Selected bank · selected period</div>
-            </div>
-            <div class="metric">
-              <div class="metric-top">
-                <div class="metric-icon blue">⊖</div>
-                <div>
-                  <div class="metric-label">Balance</div>
-                  <div class="metric-value" id="metricBalance" style="color: var(--primary);">₹0</div>
-                </div>
-              </div>
-              <div class="metric-note" id="metricBalanceNote">Latest balance in selected bank</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="chart-grid">
-          <div class="card">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">Inflow vs Outflow</h2>
-                <p class="section-sub" id="bankChartSub">Monthly trend for the selected bank and year.</p>
-              </div>
-            </div>
-            <canvas id="bankChart" height="170"></canvas>
-          </div>
-
-          <div class="card">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">Categories</h2>
-                <p class="section-sub" id="categorySub">Bank-wise outflow breakdown.</p>
-              </div>
-            </div>
-            <canvas id="categoryChart" height="170"></canvas>
-            <div class="muted-center" id="categoryTotalText">Total outflow ₹0</div>
-          </div>
-        </div>
-
-        <div class="card top-spending">
-          <div class="section-head">
-            <div>
-              <h2 class="section-title">Top spending</h2>
-              <p class="section-sub" id="topSpendingSub">Bank-wise top expenses for the selected month.</p>
-            </div>
-          </div>
-          <div class="spend-list" id="topSpendingList"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="tab-panel" id="tab-history">
-      <div class="card">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">History</h2>
-            <p class="section-sub">Recent transactions from Google Sheets.</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Bank</th>
-                <th>Type</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Credit</th>
-                <th>Cost</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody id="historyTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <section class="tab-panel" id="tab-settings">
-      <div class="settings-wrap">
-        <div class="card">
-          <div class="section-head">
-            <div>
-              <h2 class="section-title">Settings</h2>
-              <p class="section-sub">Save your Apps Script Web App URL once. It will auto-load next time.</p>
-            </div>
-          </div>
-          <div class="settings-row">
-            <input class="text-input" id="scriptUrlInput" type="url" placeholder="Paste Apps Script Web App URL here..." />
-            <button class="btn btn-primary" id="saveScriptUrlBtn">Save URL</button>
-            <button class="btn btn-soft" id="settingsSyncBtn">Sync now</button>
-            <button class="btn btn-outline" id="clearScriptUrlBtn">Clear URL</button>
-          </div>
-          <div class="status-text" id="settingsStatus"></div>
-        </div>
-        <div class="card settings-help">
-          <strong>How this works:</strong><br>
-          1. Save the Apps Script URL once.<br>
-          2. The site stores it in your browser using localStorage.<br>
-          3. On every future page load, the dashboard auto-syncs immediately.<br>
-          4. You can still manually sync from Settings or Dashboard anytime.
-        </div>
-      </div>
-    </section>
+    <div class="pin-keypad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key" onclick="pinKey('0')" style="grid-column:2">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <div class="pin-error" id="pinError"></div>
   </div>
+</div>
 
-  <script>
-    const STORAGE_KEY = 'dharun_finances_script_url';
-    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const CHART_COLORS = ['#60a5fa','#86efac','#fcd34d','#c4b5fd','#fdba74','#fca5a5','#93c5fd','#a7f3d0'];
+<!-- ╔══════════════════════ MAIN APP ══════════════════════╗ -->
+<div id="app">
+  <div class="page">
 
-    const state = {
-      scriptUrl: '',
-      transactions: [],
-      banks: [],
-      addType: 'outflow',
-      selectedBank: 'Hdfc',
-      selectedMonth: new Date().getMonth() + 1,
-      selectedYear: new Date().getFullYear(),
-      bankChart: null,
-      categoryChart: null
-    };
+    <!-- Topbar -->
+    <div class="topbar">
+      <h1>Dharun dashboard</h1>
+      <div style="position:relative">
+        <button class="fab" id="fabBtn" onclick="toggleFab()" aria-label="Add new entry">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </button>
+        <div class="fab-menu" id="fabMenu">
+          <a href="invest_tracker.html#add" onclick="closeFab()">
+            <span class="ficon" style="background:#ede9ff">📈</span>
+            Add Investment
+          </a>
+          <a href="expense_tracker.html#add" onclick="closeFab()">
+            <span class="ficon" style="background:#e6faf2">💳</span>
+            Add Expense
+          </a>
+        </div>
+      </div>
+    </div>
 
-    const $ = id => document.getElementById(id);
-    const money = n => `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+    <!-- Sync bar -->
+    <div class="sync-bar">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncMsg">Loading data…</span>
+    </div>
 
-    function setGlobalStatus(text, isError = false) {
-      const el = $('globalSyncStatus');
-      el.textContent = text;
-      el.style.color = isError ? 'var(--red)' : 'var(--muted)';
-    }
-
-    function setStatus(id, text, isError = false) {
-      const el = $(id);
-      el.textContent = text || '';
-      el.style.color = isError ? 'var(--red)' : 'var(--muted)';
-    }
-
-    function switchTab(name) {
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === name);
-      });
-      document.querySelectorAll('.tab-panel').forEach(panel => {
-        panel.classList.toggle('active', panel.id === `tab-${name}`);
-      });
-    }
-
-    function setupTabs() {
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-      });
-    }
-
-    function setupTypeSwitch() {
-      $('typeOutBtn').addEventListener('click', () => setAddType('outflow'));
-      $('typeInBtn').addEventListener('click', () => setAddType('inflow'));
-    }
-
-    function setAddType(type) {
-      state.addType = type;
-      $('typeOutBtn').classList.toggle('active', type === 'outflow');
-      $('typeInBtn').classList.toggle('active', type === 'inflow');
-    }
-
-    function loadSavedUrl() {
-      const saved = localStorage.getItem(STORAGE_KEY) || '';
-      state.scriptUrl = saved.trim();
-      $('scriptUrlInput').value = state.scriptUrl;
-    }
-
-    function saveUrl() {
-      const url = $('scriptUrlInput').value.trim();
-      if (!url) {
-        setStatus('settingsStatus', 'Paste a valid Apps Script URL.', true);
-        return false;
-      }
-      state.scriptUrl = url;
-      localStorage.setItem(STORAGE_KEY, url);
-      setStatus('settingsStatus', 'Script URL saved successfully.');
-      setGlobalStatus('Script URL saved. Ready to sync.');
-      return true;
-    }
-
-    function clearUrl() {
-      localStorage.removeItem(STORAGE_KEY);
-      state.scriptUrl = '';
-      $('scriptUrlInput').value = '';
-      setStatus('settingsStatus', 'Saved script URL cleared.');
-      setGlobalStatus('No script URL saved.', true);
-    }
-
-    function getYears() {
-      const years = [...new Set(state.transactions.map(t => t.year))].sort((a, b) => a - b);
-      if (!years.length) return [new Date().getFullYear()];
-      return years;
-    }
-
-    function ensureSelections() {
-      if (!state.banks.length) state.banks = ['Hdfc', 'Iob', 'Canara'];
-      if (!state.banks.includes(state.selectedBank)) state.selectedBank = state.banks[0];
-      const years = getYears();
-      if (!years.includes(state.selectedYear)) state.selectedYear = years[years.length - 1];
-    }
-
-    function populateControls() {
-      ensureSelections();
-      $('addDate').value = $('addDate').value || new Date().toISOString().slice(0, 10);
-
-      $('addBank').innerHTML = state.banks.map(bank => `<option value="${bank}">${bank}</option>`).join('');
-      $('dashBank').innerHTML = state.banks.map(bank => `<option value="${bank}">${bank}</option>`).join('');
-      $('dashMonth').innerHTML = MONTHS.map((m, i) => `<option value="${i + 1}">${m}</option>`).join('');
-      $('dashYear').innerHTML = getYears().map(y => `<option value="${y}">${y}</option>`).join('');
-
-      $('dashBank').value = state.selectedBank;
-      $('dashMonth').value = String(state.selectedMonth);
-      $('dashYear').value = String(state.selectedYear);
-      if (!$('addBank').value) $('addBank').value = state.banks[0];
-    }
-
-    function txForBankMonth(bank, month, year) {
-      return state.transactions.filter(t => t.bank === bank && t.month === month && t.year === year);
-    }
-
-    function txForBankYear(bank, year) {
-      return state.transactions.filter(t => t.bank === bank && t.year === year);
-    }
-
-    function calcTotals(transactions) {
-      return transactions.reduce((acc, t) => {
-        acc.inflow += Number(t.credit || 0);
-        acc.outflow += Number(t.cost || 0);
-        acc.count += 1;
-        return acc;
-      }, { inflow: 0, outflow: 0, count: 0 });
-    }
-
-    function latestBalanceForBank(bank, month, year) {
-      const txs = txForBankMonth(bank, month, year);
-      if (!txs.length) {
-        const allBankTx = state.transactions.filter(t => t.bank === bank).sort((a, b) => b.date.localeCompare(a.date));
-        return allBankTx.length ? Number(allBankTx[0].balance || 0) : 0;
-      }
-      const latest = [...txs].sort((a, b) => b.date.localeCompare(a.date))[0];
-      return Number(latest.balance || 0);
-    }
-
-    function renderDashboardMetrics() {
-      const txs = txForBankMonth(state.selectedBank, state.selectedMonth, state.selectedYear);
-      const totals = calcTotals(txs);
-      const balance = latestBalanceForBank(state.selectedBank, state.selectedMonth, state.selectedYear);
-      const label = `${state.selectedBank} · ${MONTHS[state.selectedMonth - 1]} ${state.selectedYear}`;
-
-      $('metricInflow').textContent = money(totals.inflow);
-      $('metricOutflow').textContent = money(totals.outflow);
-      $('metricBalance').textContent = money(balance);
-      $('metricInflowNote').textContent = label;
-      $('metricOutflowNote').textContent = label;
-      $('metricBalanceNote').textContent = `Latest balance for ${state.selectedBank}`;
-    }
-
-    function renderBankChart() {
-      const yearlyTx = txForBankYear(state.selectedBank, state.selectedYear);
-      const inflow = Array(12).fill(0);
-      const outflow = Array(12).fill(0);
-      yearlyTx.forEach(t => {
-        inflow[t.month - 1] += Number(t.credit || 0);
-        outflow[t.month - 1] += Number(t.cost || 0);
-      });
-
-      $('bankChartSub').textContent = `${state.selectedBank} · ${state.selectedYear}`;
-      const ctx = $('bankChart');
-      if (state.bankChart) state.bankChart.destroy();
-      state.bankChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: MONTHS.map(m => m.slice(0, 3)),
-          datasets: [
-            {
-              label: 'Inflow',
-              data: inflow,
-              borderColor: '#22c55e',
-              backgroundColor: 'rgba(34,197,94,0.12)',
-              fill: true,
-              tension: 0.38,
-              pointRadius: 3
-            },
-            {
-              label: 'Outflow',
-              data: outflow,
-              borderColor: '#ef4444',
-              backgroundColor: 'rgba(239,68,68,0.10)',
-              fill: true,
-              tension: 0.38,
-              pointRadius: 3
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'top', align: 'start' } },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { callback: value => '₹' + Number(value).toLocaleString('en-IN') }
-            }
-          }
-        }
-      });
-    }
-
-    function renderCategoryChart() {
-      const txs = txForBankMonth(state.selectedBank, state.selectedMonth, state.selectedYear).filter(t => Number(t.cost || 0) > 0);
-      const totals = {};
-      txs.forEach(t => {
-        const key = t.category || 'Others';
-        totals[key] = (totals[key] || 0) + Number(t.cost || 0);
-      });
-      const sorted = Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, 8);
-      const labels = sorted.map(x => x[0]);
-      const values = sorted.map(x => x[1]);
-      const total = values.reduce((a, b) => a + b, 0);
-
-      $('categorySub').textContent = `${state.selectedBank} · ${MONTHS[state.selectedMonth - 1]} ${state.selectedYear}`;
-      $('categoryTotalText').textContent = `Total outflow ${money(total)}`;
-
-      const ctx = $('categoryChart');
-      if (state.categoryChart) state.categoryChart.destroy();
-      state.categoryChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels,
-          datasets: [{ data: values, backgroundColor: CHART_COLORS, borderWidth: 0 }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'right' }
-          }
-        }
-      });
-    }
-
-    function iconForCategory(category) {
-      const c = String(category || '').toLowerCase();
-      if (c.includes('food')) return '🍽';
-      if (c.includes('petrol') || c.includes('transport')) return '⛽';
-      if (c.includes('subscription')) return '📶';
-      if (c.includes('medicine')) return '💊';
-      if (c.includes('purchase') || c.includes('shopping')) return '🛍';
-      if (c.includes('salary') || c.includes('inflow')) return '💸';
-      return '•';
-    }
-
-    function renderTopSpending() {
-      const txs = txForBankMonth(state.selectedBank, state.selectedMonth, state.selectedYear)
-        .filter(t => Number(t.cost || 0) > 0)
-        .sort((a, b) => Number(b.cost) - Number(a.cost))
-        .slice(0, 5);
-
-      $('topSpendingSub').textContent = `${state.selectedBank} · ${MONTHS[state.selectedMonth - 1]} ${state.selectedYear}`;
-      const list = $('topSpendingList');
-      if (!txs.length) {
-        list.innerHTML = `<div class="muted-center">No outflow for this selection.</div>`;
-        return;
-      }
-      list.innerHTML = txs.map(t => `
-        <div class="spend-item">
-          <div class="spend-left">
-            <div class="spend-icon">${iconForCategory(t.category)}</div>
-            <div>
-              <div class="spend-name">${t.reason || t.category}</div>
-              <div class="spend-meta">${t.category}</div>
-            </div>
-          </div>
-          <div class="spend-right">
-            <div class="spend-amt">${money(t.cost)}</div>
-            <div class="spend-date">${t.date}</div>
+    <!-- ── INVESTMENT CARD ── -->
+    <div class="section-card" style="margin-top:14px">
+      <div class="card-header">
+        <div class="card-icon invest-icon">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+        </div>
+        <div class="card-header-text">
+          <h2>Investment Tracker</h2>
+          <p>Track and grow your investments</p>
+        </div>
+      </div>
+      <div class="invest-donut-wrap">
+        <div class="donut-chart-box">
+          <canvas id="investDonut"></canvas>
+          <div class="donut-center">
+            <span class="donut-label">Total Value</span>
+            <span class="donut-value" id="investTotal">₹0</span>
+            <span class="donut-delta" id="investGrowth">+0%</span>
           </div>
         </div>
-      `).join('');
+        <div class="invest-legend" id="investLegend"></div>
+      </div>
+      <div class="invest-card-bottom">
+        <a href="invest_tracker.html" class="invest-open">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          </svg>
+          Open Investment Tracker
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <div style="height:16px"></div>
+      </div>
+    </div>
+
+    <!-- ── EXPENSE CARD ── -->
+    <div class="section-card">
+      <div class="card-header">
+        <div class="card-icon expense-icon">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <path d="M2 10h20"/>
+          </svg>
+        </div>
+        <div class="card-header-text">
+          <h2>Expense Tracker</h2>
+          <p>Keep track of your bank balances</p>
+        </div>
+      </div>
+      <div class="bank-list" id="bankList">
+        <!-- filled by JS -->
+      </div>
+      <div class="expense-card-bottom">
+        <a href="expense_tracker.html" class="expense-open">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <path d="M2 10h20"/>
+          </svg>
+          Open Expense Tracker
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <div style="height:16px"></div>
+      </div>
+    </div>
+
+  </div><!-- .page -->
+</div><!-- #app -->
+
+<script>
+// ════════════════════════════════
+//  PIN LOGIC  (set your real PIN here)
+// ════════════════════════════════
+const CORRECT_PIN = "2580"; // ← change this to your desired PIN
+let entered = "";
+
+function pinKey(k) {
+  if (entered.length >= 4) return;
+  entered += k;
+  updateDots();
+  if (entered.length === 4) {
+    setTimeout(checkPin, 120);
+  }
+}
+function pinDel() {
+  if (!entered.length) return;
+  entered = entered.slice(0,-1);
+  updateDots();
+  document.getElementById("pinError").textContent = "";
+  document.querySelectorAll(".pin-dot").forEach(d => d.classList.remove("error"));
+}
+function updateDots() {
+  for (let i=0;i<4;i++) {
+    const d = document.getElementById("d"+i);
+    d.classList.toggle("filled", i < entered.length);
+    d.classList.remove("error");
+  }
+}
+function checkPin() {
+  if (entered === CORRECT_PIN) {
+    document.getElementById("pin-overlay").classList.add("hidden");
+    document.getElementById("app").classList.add("visible");
+    initDashboard();
+  } else {
+    document.querySelectorAll(".pin-dot").forEach(d => d.classList.add("error"));
+    document.getElementById("pinError").textContent = "Incorrect PIN. Try again.";
+    setTimeout(() => {
+      entered = "";
+      updateDots();
+      document.getElementById("pinError").textContent = "";
+    }, 900);
+  }
+}
+// keyboard support
+document.addEventListener("keydown", e => {
+  if (document.getElementById("pin-overlay").classList.contains("hidden")) return;
+  if (/^[0-9]$/.test(e.key)) pinKey(e.key);
+  if (e.key === "Backspace") pinDel();
+});
+
+// ════════════════════════════════
+//  FAB MENU
+// ════════════════════════════════
+function toggleFab() {
+  document.getElementById("fabMenu").classList.toggle("open");
+}
+function closeFab() {
+  document.getElementById("fabMenu").classList.remove("open");
+}
+document.addEventListener("click", e => {
+  if (!document.getElementById("fabBtn").contains(e.target)) closeFab();
+});
+
+// ════════════════════════════════
+//  HELPERS
+// ════════════════════════════════
+function money(n) {
+  const num = parseFloat(n) || 0;
+  return "₹" + num.toLocaleString("en-IN", {maximumFractionDigits:2});
+}
+function moneyShort(n) {
+  const num = parseFloat(n) || 0;
+  if (num >= 100000) return "₹" + (num/100000).toLocaleString("en-IN",{maximumFractionDigits:2})+" L";
+  if (num >= 1000) return "₹" + (num/1000).toLocaleString("en-IN",{maximumFractionDigits:1})+"K";
+  return money(num);
+}
+function setSyncStatus(type, msg) {
+  const dot = document.getElementById("syncDot");
+  dot.className = "sync-dot" + (type==="ok"?" ok":type==="err"?" err":"");
+  document.getElementById("syncMsg").textContent = msg;
+}
+
+// ════════════════════════════════
+//  INVESTMENT DONUT
+// ════════════════════════════════
+let investChart = null;
+const INV_COLORS = ["#7c6ef5","#60a5fa","#34d399","#fbbf24"];
+
+function renderInvestCard(data) {
+  // data = { stocks, mf, gs, total }
+  const { stocks=0, mf=0, gs=0, total=1 } = data;
+  const segments = [
+    { label:"Equity Funds", value:stocks, pct: Math.round(stocks/total*100) },
+    { label:"Index Funds",  value:mf,     pct: Math.round(mf/total*100) },
+    { label:"PPF",          value:0,      pct: 0 },
+    { label:"Gold",         value:gs,     pct: Math.round(gs/total*100) },
+  ];
+  // recalculate PPF as remainder
+  const usedPct = segments[0].pct + segments[1].pct + segments[3].pct;
+  segments[2].pct = Math.max(0, 100 - usedPct);
+  segments[2].value = Math.max(0, total - stocks - mf - gs);
+
+  document.getElementById("investTotal").textContent = moneyShort(total);
+  // growth: dummy ~12.6% based on 66% in zerodha
+  const growth = total > 0 ? "+12.6% ↗" : "0%";
+  document.getElementById("investGrowth").textContent = growth;
+
+  // Legend
+  document.getElementById("investLegend").innerHTML = segments.map((s,i)=>`
+    <div class="legend-row">
+      <div class="legend-left">
+        <div class="legend-dot" style="background:${INV_COLORS[i]}"></div>
+        ${s.label}
+      </div>
+      <div class="legend-pct">${s.pct}%</div>
+    </div>
+  `).join("");
+
+  // Chart
+  const ctx = document.getElementById("investDonut");
+  if (investChart) investChart.destroy();
+  investChart = new Chart(ctx, {
+    type:"doughnut",
+    data:{
+      labels: segments.map(s=>s.label),
+      datasets:[{
+        data: segments.map(s=>s.value),
+        backgroundColor: INV_COLORS,
+        borderColor:"#fff",
+        borderWidth:4,
+        hoverOffset:6,
+      }]
+    },
+    options:{
+      responsive:false, cutout:"72%",
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.label+": "+moneyShort(ctx.raw)}}}
     }
+  });
+}
 
-    function renderHistory() {
-      const body = $('historyTableBody');
-      const rows = [...state.transactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 50);
-      if (!rows.length) {
-        body.innerHTML = `<tr><td colspan="8" class="muted-center">No transactions available.</td></tr>`;
-        return;
-      }
-      body.innerHTML = rows.map(t => `
-        <tr>
-          <td>${t.date}</td>
-          <td><span class="badge badge-bank">${t.bank}</span></td>
-          <td><span class="badge ${Number(t.credit || 0) > 0 ? 'badge-in' : 'badge-out'}">${Number(t.credit || 0) > 0 ? 'Inflow' : 'Outflow'}</span></td>
-          <td>${t.category}</td>
-          <td>${t.reason || '-'}</td>
-          <td style="color: var(--green); font-weight: 700;">${Number(t.credit || 0) ? money(t.credit) : '—'}</td>
-          <td style="color: var(--red); font-weight: 700;">${Number(t.cost || 0) ? money(t.cost) : '—'}</td>
-          <td>${money(t.balance || 0)}</td>
-        </tr>
-      `).join('');
-    }
+// ════════════════════════════════
+//  EXPENSE BANK LIST
+// ════════════════════════════════
+const BANK_META = {
+  "Hdfc":{name:"HDFC Bank",acc:"**** 0001",bg:"linear-gradient(135deg,#004C8F,#006EC7)",fg:"#fff",abbr:"H"},
+  "Iob": {name:"Indian Overseas Bank",acc:"**** 0002",bg:"linear-gradient(135deg,#1a4fa0,#2563eb)",fg:"#fff",abbr:"I"},
+  "Canara":{name:"Canara Bank",acc:"**** 0003",bg:"linear-gradient(135deg,#036d19,#16a34a)",fg:"#fff",abbr:"C"},
+  "Sbi": {name:"State Bank of India",acc:"**** 1234",bg:"linear-gradient(135deg,#1b4fa0,#2176c7)",fg:"#fff",abbr:"S"},
+  "Axis":{name:"Axis Bank",acc:"**** 5678",bg:"linear-gradient(135deg,#97040d,#d11a2a)",fg:"#fff",abbr:"A"},
+  "Icici":{name:"ICICI Bank",acc:"**** 9101",bg:"linear-gradient(135deg,#cc5500,#e87722)",fg:"#fff",abbr:"i"},
+};
 
-    function renderAll() {
-      populateControls();
-      renderDashboardMetrics();
-      renderBankChart();
-      renderCategoryChart();
-      renderTopSpending();
-      renderHistory();
-    }
+function renderExpenseCard(banksData) {
+  // banksData = [{bank, balance}]
+  const list = document.getElementById("bankList");
+  if (!banksData.length) {
+    list.innerHTML = `<div style="padding:20px;text-align:center;color:#8882aa;font-size:13px">No expense data synced yet</div>`;
+    return;
+  }
+  list.innerHTML = banksData.map(b => {
+    const meta = BANK_META[b.bank] || {name:b.bank,acc:"****",bg:"#eee",fg:"#333",abbr:b.bank[0]};
+    return `
+    <a class="bank-row" href="expense_tracker.html">
+      <div class="bank-left">
+        <div class="bank-logo" style="background:${meta.bg};color:${meta.fg}">${meta.abbr}</div>
+        <div class="bank-info">
+          <h3>${meta.name}</h3>
+          <p>${meta.acc}</p>
+        </div>
+      </div>
+      <div class="bank-right">
+        <div class="bank-amount">${money(b.balance)}</div>
+        <div class="bank-label">Available Balance</div>
+      </div>
+      <span class="bank-arrow">›</span>
+    </a>`;
+  }).join("");
+}
 
-    async function syncFromSheet(source = 'manual') {
-      if (!state.scriptUrl) {
-        setGlobalStatus('No Apps Script URL saved.', true);
-        setStatus('settingsStatus', 'Save the Apps Script URL first.', true);
-        return;
-      }
-      setGlobalStatus(source === 'auto' ? 'Auto syncing...' : 'Syncing...');
-      try {
-        const separator = state.scriptUrl.includes('?') ? '&' : '?';
-        const response = await fetch(`${state.scriptUrl}${separator}action=read&_=${Date.now()}`);
-        const data = await response.json();
-        if (data.status !== 'ok') throw new Error(data.message || 'Sync failed');
-        state.transactions = Array.isArray(data.transactions) ? data.transactions : [];
-        state.banks = Array.isArray(data.banks) && data.banks.length ? data.banks : ['Hdfc', 'Iob', 'Canara'];
-        ensureSelections();
-        renderAll();
-        const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        setGlobalStatus(`Synced ${state.transactions.length} rows · ${time}`);
-        setStatus('settingsStatus', 'Data synced successfully.');
-      } catch (err) {
-        setGlobalStatus(err.message || 'Sync failed.', true);
-        setStatus('settingsStatus', err.message || 'Sync failed.', true);
-      }
-    }
-
-    async function addTransaction() {
-      if (!state.scriptUrl) {
-        setStatus('addStatus', 'Save the Apps Script URL in Settings first.', true);
-        switchTab('settings');
-        return;
-      }
-      const date = $('addDate').value;
-      const bank = $('addBank').value;
-      const category = $('addCategory').value.trim();
-      const amount = $('addAmount').value;
-      const description = $('addDescription').value.trim();
-      if (!date) return setStatus('addStatus', 'Please select a date.', true);
-      if (!category) return setStatus('addStatus', 'Please enter a category.', true);
-      if (!amount || Number(amount) <= 0) return setStatus('addStatus', 'Please enter a valid amount.', true);
-
-      setStatus('addStatus', 'Saving transaction...');
-      try {
-        const body = new URLSearchParams({
-          action: 'write',
-          date,
-          bank,
-          type: state.addType,
-          category,
-          amount,
-          description
+// ════════════════════════════════
+//  DATA FETCHING
+// ════════════════════════════════
+async function fetchInvestData() {
+  let scriptUrl = "";
+  try { scriptUrl = localStorage.getItem("ptscripturl") || ""; } catch(e){}
+  if (!scriptUrl) return null;
+  try {
+    const res = await fetch(scriptUrl + "?action=read&t=" + Date.now());
+    const text = await res.text();
+    const json = JSON.parse(text);
+    let stocks=0, mf=0, gs=0;
+    ["Stocks","SIP","GoldSilver"].forEach(sheet => {
+      const rows = json[sheet];
+      if (Array.isArray(rows) && rows.length > 1) {
+        const headers = rows[0].map(h=>String(h).trim());
+        const amtIdx = headers.findIndex(h=>h==="Amount"||h==="amount");
+        rows.slice(1).forEach(row => {
+          const amt = parseFloat(row[amtIdx]) || 0;
+          if (sheet==="Stocks") stocks += amt;
+          else if (sheet==="SIP") mf += amt;
+          else gs += amt;
         });
-        const response = await fetch(state.scriptUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-          body: body.toString()
-        });
-        const data = await response.json();
-        if (data.status !== 'ok') throw new Error(data.message || 'Save failed');
-        state.transactions = Array.isArray(data.transactions) ? data.transactions : [];
-        state.banks = Array.isArray(data.banks) && data.banks.length ? data.banks : state.banks;
-        state.selectedBank = bank;
-        const [y, m] = date.split('-');
-        state.selectedYear = Number(y);
-        state.selectedMonth = Number(m);
-        $('addAmount').value = '';
-        $('addDescription').value = '';
-        $('addCategory').value = '';
-        renderAll();
-        setStatus('addStatus', 'Transaction added and dashboard synced.');
-        setGlobalStatus('Transaction saved and synced.');
-      } catch (err) {
-        setStatus('addStatus', err.message || 'Save failed.', true);
       }
-    }
+    });
+    return { stocks, mf, gs, total: stocks+mf+gs };
+  } catch(e) { return null; }
+}
 
-    function bindEvents() {
-      setupTabs();
-      setupTypeSwitch();
-      $('saveScriptUrlBtn').addEventListener('click', () => saveUrl());
-      $('clearScriptUrlBtn').addEventListener('click', clearUrl);
-      $('settingsSyncBtn').addEventListener('click', () => syncFromSheet('manual'));
-      $('dashboardSyncBtn').addEventListener('click', () => syncFromSheet('manual'));
-      $('addSubmitBtn').addEventListener('click', addTransaction);
-      $('dashBank').addEventListener('change', e => {
-        state.selectedBank = e.target.value;
-        renderAll();
-      });
-      $('dashMonth').addEventListener('change', e => {
-        state.selectedMonth = Number(e.target.value);
-        renderAll();
-      });
-      $('dashYear').addEventListener('change', e => {
-        state.selectedYear = Number(e.target.value);
-        renderAll();
-      });
-    }
+async function fetchExpenseData() {
+  let scriptUrl = "";
+  try { scriptUrl = localStorage.getItem("dharunfinancesscripturl") || ""; } catch(e){}
+  if (!scriptUrl) return null;
+  try {
+    const sep = scriptUrl.includes("?") ? "&" : "?";
+    const res = await fetch(scriptUrl + sep + "action=read&t=" + Date.now());
+    const json = await res.json();
+    if (!Array.isArray(json.transactions)) return null;
+    const txs = json.transactions;
+    const banks = json.banks || [...new Set(txs.map(t=>t.bank).filter(Boolean))];
+    const banksData = banks.map(bank => {
+      const bankTxs = txs.filter(t=>t.bank===bank).sort((a,b)=>b.date.localeCompare(a.date));
+      const latest = bankTxs[0];
+      const balance = latest ? (parseFloat(latest.balance) || 0) : 0;
+      return { bank, balance };
+    });
+    return banksData;
+  } catch(e) { return null; }
+}
 
-    async function init() {
-      bindEvents();
-      loadSavedUrl();
-      populateControls();
-      renderAll();
-      if (state.scriptUrl) {
-        await syncFromSheet('auto');
-      } else {
-        setGlobalStatus('Save Apps Script URL in Settings to enable auto sync.', true);
-      }
-    }
+// ════════════════════════════════
+//  INIT DASHBOARD
+// ════════════════════════════════
+async function initDashboard() {
+  setSyncStatus("", "Syncing data…");
 
-    init();
-  </script>
+  // Check if script URLs are saved
+  let invUrl="", expUrl="";
+  try { invUrl = localStorage.getItem("ptscripturl") || ""; } catch(e){}
+  try { expUrl = localStorage.getItem("dharunfinancesscripturl") || ""; } catch(e){}
+
+  let invOk = false, expOk = false;
+
+  // Investment
+  if (invUrl) {
+    const invData = await fetchInvestData();
+    if (invData) {
+      renderInvestCard(invData);
+      invOk = true;
+    } else {
+      renderInvestCard({stocks:0,mf:0,gs:0,total:0});
+    }
+  } else {
+    // No URL saved — show placeholder donut
+    renderInvestCard({stocks:45,mf:25,gs:10,total:80});
+  }
+
+  // Expense
+  if (expUrl) {
+    const expData = await fetchExpenseData();
+    if (expData && expData.length) {
+      renderExpenseCard(expData);
+      expOk = true;
+    } else {
+      renderExpenseCard([]);
+    }
+  } else {
+    // No URL saved — show placeholder banks
+    renderExpenseCard([
+      {bank:"Sbi", balance:125430.50},
+      {bank:"Axis", balance:78920.20},
+      {bank:"Icici", balance:45670.80},
+    ]);
+  }
+
+  if (!invUrl && !expUrl) {
+    setSyncStatus("err", "Open each tracker and set the Apps Script URL to sync live data.");
+  } else if (invOk || expOk) {
+    setSyncStatus("ok", "Synced · " + new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}));
+  } else {
+    setSyncStatus("err", "Could not sync — check your script URL in each tracker.");
+  }
+}
+</script>
 </body>
 </html>
